@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import type React from "react";
+import type React from 'react';
 
-import { useState, useEffect, useRef } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Card,
   CardContent,
@@ -14,28 +14,28 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { ArrowLeft, Send, Download, Save, User, Bot } from "lucide-react";
-import { streamText } from "ai";
-import { openai } from "@ai-sdk/openai";
+} from '@/components/ui/card';
+import { ArrowLeft, Send, Download, Save, User, Bot } from 'lucide-react';
+import { streamText } from 'ai';
+import { openai } from '@ai-sdk/openai';
 
 type Message = {
-  role: "user" | "assistant";
+  role: 'user' | 'assistant';
   content: string;
 };
 
 export default function ChatPage() {
   const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [coverLetter, setCoverLetter] = useState("");
-  const [title, setTitle] = useState("Cover Letter");
+  const [coverLetter, setCoverLetter] = useState('');
+  const [title, setTitle] = useState('Cover Letter');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // In a real app, you would fetch this from your API
-    const savedCoverLetter = localStorage.getItem("generatedCoverLetter");
+    const savedCoverLetter = localStorage.getItem('generatedCoverLetter');
 
     if (savedCoverLetter) {
       setCoverLetter(savedCoverLetter);
@@ -43,30 +43,30 @@ export default function ChatPage() {
       // Add initial system message
       setMessages([
         {
-          role: "assistant",
+          role: 'assistant',
           content:
             "I'm your AI cover letter assistant. I can help you refine your cover letter, suggest improvements, or answer any questions you have about it. What would you like help with?",
         },
       ]);
     } else {
       // If no cover letter is found, redirect back to create
-      router.push("/cover-letters/new");
+      router.push('/cover-letters/new');
     }
   }, [router]);
 
   useEffect(() => {
     // Scroll to bottom when messages change
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   const handleSendMessage = async () => {
     if (!input.trim() || isLoading) return;
 
     const userMessage = input.trim();
-    setInput("");
+    setInput('');
 
     // Add user message to chat
-    setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
+    setMessages((prev) => [...prev, { role: 'user', content: userMessage }]);
 
     setIsLoading(true);
 
@@ -82,23 +82,23 @@ export default function ChatPage() {
       `;
 
       // Create a temporary message for streaming
-      setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+      setMessages((prev) => [...prev, { role: 'assistant', content: '' }]);
 
       // Stream the response
-      let fullResponse = "";
+      let fullResponse = '';
 
       const result = streamText({
-        model: openai("gpt-4o"),
+        model: openai('gpt-4o'),
         prompt: context,
         onChunk: ({ chunk }) => {
-          if (chunk.type === "text-delta") {
+          if (chunk.type === 'text-delta') {
             fullResponse += chunk.text;
 
             // Update the last message with the streaming content
             setMessages((prev) => {
               const newMessages = [...prev];
               newMessages[newMessages.length - 1] = {
-                role: "assistant",
+                role: 'assistant',
                 content: fullResponse,
               };
               return newMessages;
@@ -109,14 +109,14 @@ export default function ChatPage() {
 
       await result.text;
     } catch (error) {
-      console.error("Error sending message:", error);
+      console.error('Error sending message:', error);
 
       // Add error message
       setMessages((prev) => [
         ...prev.slice(0, -1), // Remove the temporary message
         {
-          role: "assistant",
-          content: "Sorry, I encountered an error. Please try again.",
+          role: 'assistant',
+          content: 'Sorry, I encountered an error. Please try again.',
         },
       ]);
     } finally {
@@ -125,7 +125,7 @@ export default function ChatPage() {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
@@ -133,18 +133,18 @@ export default function ChatPage() {
 
   const handleUpdateCoverLetter = () => {
     // In a real app, you would save the updated cover letter to your database
-    router.push("/cover-letters");
+    router.push('/cover-letters');
   };
 
   const handleDownload = () => {
     // Create a blob with the cover letter text
-    const blob = new Blob([coverLetter], { type: "text/plain" });
+    const blob = new Blob([coverLetter], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
 
     // Create a link and trigger download
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
-    a.download = `${title.replace(/[^a-z0-9]/gi, "-").toLowerCase()}.txt`;
+    a.download = `${title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.txt`;
     document.body.appendChild(a);
     a.click();
 
@@ -159,7 +159,7 @@ export default function ChatPage() {
       <header className="border-b">
         <div className="container flex items-center justify-between py-4">
           <Link href="/" className="text-2xl font-bold">
-            CoverCraft
+            CoverUp
           </Link>
           <nav className="hidden md:flex items-center gap-6">
             <Link href="/dashboard" className="font-medium">
@@ -196,7 +196,7 @@ export default function ChatPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="bg-gray-50 p-4 rounded-md max-h-[500px] overflow-y-auto font-serif text-sm">
-                    {coverLetter.split("\n").map((paragraph, index) => (
+                    {coverLetter.split('\n').map((paragraph, index) => (
                       <p key={index} className="mb-3">
                         {paragraph}
                       </p>
@@ -229,20 +229,24 @@ export default function ChatPage() {
                     {messages.map((message, index) => (
                       <div
                         key={index}
-                        className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                        className={`flex ${
+                          message.role === 'user'
+                            ? 'justify-end'
+                            : 'justify-start'
+                        }`}
                       >
                         <div
                           className={`
                             max-w-[80%] rounded-lg p-3
                             ${
-                              message.role === "user"
-                                ? "bg-primary text-primary-foreground"
-                                : "bg-gray-100 text-gray-900"
+                              message.role === 'user'
+                                ? 'bg-primary text-primary-foreground'
+                                : 'bg-gray-100 text-gray-900'
                             }
                           `}
                         >
                           <div className="flex items-center mb-1">
-                            {message.role === "user" ? (
+                            {message.role === 'user' ? (
                               <>
                                 <span className="font-medium">You</span>
                                 <User className="h-3 w-3 ml-1" />
@@ -257,8 +261,8 @@ export default function ChatPage() {
                             )}
                           </div>
                           <div>
-                            {message.content.split("\n").map((line, i) => (
-                              <p key={i} className={i > 0 ? "mt-2" : ""}>
+                            {message.content.split('\n').map((line, i) => (
+                              <p key={i} className={i > 0 ? 'mt-2' : ''}>
                                 {line}
                               </p>
                             ))}

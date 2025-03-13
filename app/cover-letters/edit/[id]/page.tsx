@@ -1,11 +1,10 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import {
   Card,
   CardContent,
@@ -13,60 +12,66 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { ArrowLeft, Download, MessageSquare, Save } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from '@/components/ui/card';
+import { ArrowLeft, Download, MessageSquare, Save } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { BACKEND_URL } from '@/lib/consts';
+import { usePathname } from 'next/navigation';
+import SignInNav from '@/components/custom/signin-nav';
 
 export default function EditCoverLetterPage() {
-  const router = useRouter();
-  const [coverLetter, setCoverLetter] = useState("");
-  const [jobDescription, setJobDescription] = useState("");
-  const [title, setTitle] = useState("Cover Letter");
+  const [coverLetter, setCoverLetter] = useState('');
+  const [jobDescription, setJobDescription] = useState('');
+  const [title, setTitle] = useState('Cover Letter');
   const [isSaving, setIsSaving] = useState(false);
+  const pathname = usePathname();
+  const id = pathname.split('/').pop();
 
   useEffect(() => {
-    // In a real app, you would fetch this from your API
-    const savedCoverLetter = localStorage.getItem("generatedCoverLetter");
-    const savedJobDescription = localStorage.getItem("jobDescription");
+    const fetchLetter = async () => {
+      const res = await fetch(`${BACKEND_URL}/api/letters/${id}`);
+      const data = await res.json();
+      setCoverLetter(data.content);
+      setJobDescription(data.job_description);
+      setTitle(data.title);
+    };
 
-    if (savedCoverLetter) {
-      setCoverLetter(savedCoverLetter);
-    } else {
-      // If no cover letter is found, redirect back to create
-      router.push("/cover-letters/new");
-    }
-
-    if (savedJobDescription) {
-      setJobDescription(savedJobDescription);
-
-      // Try to extract a title from the job description
-      const lines = savedJobDescription.split("\n");
-      const potentialTitle = lines[0].trim();
-      if (potentialTitle && potentialTitle.length < 50) {
-        setTitle(potentialTitle);
-      }
-    }
-  }, [router]);
+    fetchLetter();
+  }, [id]);
 
   const handleSave = () => {
     setIsSaving(true);
 
-    // In a real app, you would save to your database
-    setTimeout(() => {
+    setTimeout(async () => {
       setIsSaving(false);
-      router.push("/cover-letters/chat");
+      const res = await fetch(`${BACKEND_URL}/api/letters/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          letter: {
+            content: coverLetter,
+            job_description: jobDescription,
+          },
+        }),
+      });
+
+      if (res.ok) {
+        console.log('Cover letter saved');
+      }
     }, 1000);
   };
 
   const handleDownload = () => {
     // Create a blob with the cover letter text
-    const blob = new Blob([coverLetter], { type: "text/plain" });
+    const blob = new Blob([coverLetter], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
 
     // Create a link and trigger download
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
-    a.download = `${title.replace(/[^a-z0-9]/gi, "-").toLowerCase()}.txt`;
+    a.download = `${title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.txt`;
     document.body.appendChild(a);
     a.click();
 
@@ -77,25 +82,7 @@ export default function EditCoverLetterPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Navigation */}
-      <header className="border-b">
-        <div className="container flex items-center justify-between py-4">
-          <Link href="/" className="text-2xl font-bold">
-            CoverCraft
-          </Link>
-          <nav className="hidden md:flex items-center gap-6">
-            <Link href="/dashboard" className="font-medium">
-              Dashboard
-            </Link>
-            <Link href="/cover-letters" className="font-medium">
-              My Cover Letters
-            </Link>
-            <Link href="/profile" className="font-medium">
-              Profile
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <SignInNav />
 
       <main className="flex-grow py-12">
         <div className="container max-w-4xl">
@@ -134,7 +121,7 @@ export default function EditCoverLetterPage() {
                   <Textarea
                     value={coverLetter}
                     onChange={(e) => setCoverLetter(e.target.value)}
-                    className="min-h-[400px] font-serif text-base"
+                    className="min-h-[400px] text-base"
                   />
                 </CardContent>
                 <CardFooter className="flex justify-between">
@@ -143,16 +130,13 @@ export default function EditCoverLetterPage() {
                     Download
                   </Button>
                   <div className="flex gap-4">
-                    <Button
-                      variant="outline"
-                      onClick={() => router.push("/cover-letters/chat")}
-                    >
+                    <Button variant="outline">
                       <MessageSquare className="mr-2 h-4 w-4" />
-                      Refine with AI
+                      <a href="/cover-letters/chat">Refine with AI</a>
                     </Button>
                     <Button onClick={handleSave} disabled={isSaving}>
                       <Save className="mr-2 h-4 w-4" />
-                      {isSaving ? "Saving..." : "Save & Continue"}
+                      {isSaving ? 'Saving...' : 'Save & Continue'}
                     </Button>
                   </div>
                 </CardFooter>

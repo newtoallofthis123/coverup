@@ -1,8 +1,5 @@
-"use client";
-
-import { useState } from "react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -10,48 +7,47 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { FileText, Plus, Settings, User, LogOut } from "lucide-react";
+} from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+import { FileText, Plus, User } from 'lucide-react';
+import SignInNav from '@/components/custom/signin-nav';
+import { currentUser } from '@clerk/nextjs/server';
+import { redirect } from 'next/navigation';
+import { BACKEND_URL } from '@/lib/consts';
 
-export default function DashboardPage() {
-  const [usedCoverLetters, setUsedCoverLetters] = useState(7);
-  const [totalCoverLetters, setTotalCoverLetters] = useState(20); // Free tier
+type Letter = {
+  id: number;
+  title: string;
+  inserted_at: string;
+};
+
+export default async function DashboardPage() {
+  const user = await currentUser();
+  const totalCoverLetters = 20;
+
+  if (!user) {
+    redirect('/sign-in');
+  }
+
+  const res = await fetch(`${BACKEND_URL}/api/dashboard/${user.id}`, {
+    method: 'GET',
+  });
+
+  const data = await res.json();
+
+  const usedCoverLetters = data.count;
+  const letters: Letter[] = data.letters;
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Navigation */}
-      <header className="border-b">
-        <div className="container flex items-center justify-between py-4">
-          <Link href="/" className="text-2xl font-bold">
-            CoverCraft
-          </Link>
-          <nav className="hidden md:flex items-center gap-6">
-            <Link href="/dashboard" className="font-medium">
-              Dashboard
-            </Link>
-            <Link href="/cover-letters" className="font-medium">
-              My Cover Letters
-            </Link>
-            <Link href="/profile" className="font-medium">
-              Profile
-            </Link>
-          </nav>
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon">
-              <Settings className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="icon">
-              <LogOut className="h-5 w-5" />
-            </Button>
-          </div>
-        </div>
-      </header>
+      <SignInNav />
 
       <main className="flex-grow py-12">
         <div className="container">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">Welcome back, John!</h1>
+            <h1 className="text-3xl font-bold mb-2">
+              Welcome back {user.firstName ?? user.username}!
+            </h1>
             <p className="text-gray-600">
               Create and manage your cover letters
             </p>
@@ -94,18 +90,14 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {[
-                    {
-                      title: "Software Engineer at Google",
-                      date: "2 days ago",
-                    },
-                    { title: "Product Manager at Meta", date: "1 week ago" },
-                  ].map((letter, index) => (
+                  {letters.map((letter, index) => (
                     <div key={index} className="flex items-start">
                       <FileText className="h-5 w-5 mr-2 mt-0.5 text-primary" />
                       <div>
                         <p className="font-medium">{letter.title}</p>
-                        <p className="text-sm text-gray-500">{letter.date}</p>
+                        <p className="text-sm text-gray-500">
+                          {new Date(letter.inserted_at).toLocaleDateString()}
+                        </p>
                       </div>
                     </div>
                   ))}

@@ -1,39 +1,39 @@
-"use client";
+'use client';
 
-import type React from "react";
+import type React from 'react';
 
-import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Upload, FileText } from "lucide-react";
+} from '@/components/ui/card';
+import { Upload, FileText } from 'lucide-react';
 
 export default function ProfileSetupPage() {
   const router = useRouter();
 
   const [formData, setFormData] = useState({
-    fullName: "",
-    title: "",
-    phone: "",
-    address: "",
-    summary: "",
-    skills: "",
+    fullName: '',
+    title: '',
+    phone: '',
+    address: '',
+    summary: '',
+    skills: '',
   });
 
   const [resumeFile, setResumeFile] = useState<File | null>(null);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -49,11 +49,11 @@ export default function ProfileSetupPage() {
     e.preventDefault();
 
     // In a real app, you would upload the resume and save the profile data
-    console.log("Profile data:", formData);
-    console.log("Resume file:", resumeFile);
+    console.log('Profile data:', formData);
+    console.log('Resume file:', resumeFile);
 
     // Redirect to dashboard
-    router.push("/dashboard");
+    router.push('/dashboard');
   };
 
   return (
@@ -61,7 +61,7 @@ export default function ProfileSetupPage() {
       <header className="border-b">
         <div className="container flex items-center justify-between py-4">
           <Link href="/" className="text-2xl font-bold">
-            CoverCraft
+            CoverUp
           </Link>
         </div>
       </header>
@@ -228,7 +228,7 @@ export default function ProfileSetupPage() {
                 <Button
                   variant="outline"
                   type="button"
-                  onClick={() => router.push("/")}
+                  onClick={() => router.push('/')}
                 >
                   Skip for now
                 </Button>

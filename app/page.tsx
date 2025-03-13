@@ -1,21 +1,40 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 import {
   ArrowRight,
   FileText,
   MessageSquare,
   Upload,
   User,
-} from "lucide-react";
+} from 'lucide-react';
+import {
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from '@clerk/nextjs';
+import Image from 'next/image';
+import { currentUser } from '@clerk/nextjs/server';
+import { redirect } from 'next/navigation';
 
-export default function Home() {
+export default async function Home() {
+  const userId = await currentUser();
+  if (userId) {
+    redirect('/dashboard');
+  }
+
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Navigation */}
       <header className="border-b">
         <div className="container flex items-center justify-between py-4">
           <Link href="/" className="text-2xl font-bold">
-            CoverCraft
+            <Image
+              src="/coverup.jpeg"
+              alt="CoverUp Logo"
+              width={120}
+              height={120}
+            />
           </Link>
           <nav className="hidden md:flex items-center gap-6">
             <Link href="/" className="font-medium">
@@ -29,28 +48,28 @@ export default function Home() {
             </Link>
           </nav>
           <div className="flex items-center gap-4">
-            <Link href="/login">
-              <Button variant="outline">Log in</Button>
-            </Link>
-            <Link href="/signup">
-              <Button>Sign up</Button>
-            </Link>
+            <SignedOut>
+              <SignInButton />
+              <SignUpButton />
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
           </div>
         </div>
       </header>
 
-      {/* Hero Section */}
       <section className="py-20 bg-gradient-to-b from-white to-gray-50">
         <div className="container flex flex-col items-center text-center">
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
-            Craft Perfect Cover Letters{" "}
+            Craft Perfect Cover Letters{' '}
             <span className="text-primary">in Seconds</span>
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mb-10">
             AI-powered cover letters tailored to your resume and the job
             description. Stand out from the crowd and land your dream job.
           </p>
-          <Link href="/signup">
+          <Link href="/dashboard">
             <Button size="lg" className="px-8 py-6 text-lg">
               Get Started <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
@@ -58,13 +77,7 @@ export default function Home() {
           <div className="mt-8 text-sm text-gray-500">
             20 free cover letters every month. No credit card required.
           </div>
-          <div className="mt-16 w-full max-w-4xl rounded-lg border shadow-lg overflow-hidden">
-            <img
-              src="/placeholder.svg?height=600&width=1000"
-              alt="CoverCraft Dashboard Preview"
-              className="w-full h-auto"
-            />
-          </div>
+          <div className="mt-16 w-full max-w-4xl rounded-lg border shadow-lg overflow-hidden"></div>
         </div>
       </section>
 
@@ -78,25 +91,25 @@ export default function Home() {
             {[
               {
                 icon: <User className="h-10 w-10 text-primary" />,
-                title: "Create an account",
+                title: 'Create an account',
                 description:
-                  "Sign up for free and get 20 cover letters per month.",
+                  'Sign up for free and get 20 cover letters per month.',
               },
               {
                 icon: <Upload className="h-10 w-10 text-primary" />,
-                title: "Upload your resume",
-                description: "Add your details or upload your existing resume.",
+                title: 'Upload your resume',
+                description: 'Add your details or upload your existing resume.',
               },
               {
                 icon: <FileText className="h-10 w-10 text-primary" />,
-                title: "Generate cover letter",
+                title: 'Generate cover letter',
                 description:
-                  "Paste a job description and generate a tailored cover letter.",
+                  'Paste a job description and generate a tailored cover letter.',
               },
               {
                 icon: <MessageSquare className="h-10 w-10 text-primary" />,
-                title: "Refine with AI",
-                description: "Chat with our AI to perfect your cover letter.",
+                title: 'Refine with AI',
+                description: 'Chat with our AI to perfect your cover letter.',
               },
             ].map((feature, index) => (
               <div
@@ -122,25 +135,27 @@ export default function Home() {
             {[
               {
                 quote:
-                  "CoverCraft helped me land my dream job at a tech company. The AI-generated cover letter was perfect!",
-                author: "Sarah J.",
-                role: "Software Engineer",
+                  'CoverUp helped me land my dream job at a tech company. The AI-generated cover letter was perfect!',
+                author: 'Sarah J.',
+                role: 'Software Engineer',
               },
               {
                 quote:
-                  "I was struggling with writing cover letters until I found CoverCraft. Now I can apply to multiple jobs in minutes.",
-                author: "Michael T.",
-                role: "Marketing Specialist",
+                  'I was struggling with writing cover letters until I found CoverUp. Now I can apply to multiple jobs in minutes.',
+                author: 'Michael T.',
+                role: 'Marketing Specialist',
               },
               {
                 quote:
-                  "The chat feature is amazing! It helped me refine my cover letter and make it sound more professional.",
-                author: "Emily R.",
-                role: "Product Manager",
+                  'The chat feature is amazing! It helped me refine my cover letter and make it sound more professional.',
+                author: 'Emily R.',
+                role: 'Product Manager',
               },
             ].map((testimonial, index) => (
               <div key={index} className="p-6 rounded-lg border bg-white">
-                <p className="text-gray-600 mb-4">"{testimonial.quote}"</p>
+                <p className="text-gray-600 mb-4">
+                  &quot;{testimonial.quote}&quot;
+                </p>
                 <div className="font-semibold">{testimonial.author}</div>
                 <div className="text-sm text-gray-500">{testimonial.role}</div>
               </div>
@@ -157,7 +172,7 @@ export default function Home() {
           </h2>
           <p className="text-xl max-w-2xl mb-10 text-primary-foreground/90">
             Join thousands of job seekers who have improved their job
-            application success rate with CoverCraft.
+            application success rate with CoverUp.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link href="/signup">
@@ -184,10 +199,10 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-6 md:mb-0">
               <Link href="/" className="text-xl font-bold">
-                CoverCraft
+                CoverUp
               </Link>
               <p className="text-gray-500 mt-2">
-                © 2025 CoverCraft. All rights reserved.
+                © 2025 CoverUp. All rights reserved.
               </p>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-16">
