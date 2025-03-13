@@ -1,100 +1,262 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  ArrowRight,
+  FileText,
+  MessageSquare,
+  Upload,
+  User,
+} from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="flex flex-col min-h-screen">
+      {/* Navigation */}
+      <header className="border-b">
+        <div className="container flex items-center justify-between py-4">
+          <Link href="/" className="text-2xl font-bold">
+            CoverCraft
+          </Link>
+          <nav className="hidden md:flex items-center gap-6">
+            <Link href="/" className="font-medium">
+              Home
+            </Link>
+            <Link href="/pricing" className="font-medium">
+              Pricing
+            </Link>
+            <Link href="/about" className="font-medium">
+              About
+            </Link>
+          </nav>
+          <div className="flex items-center gap-4">
+            <Link href="/login">
+              <Button variant="outline">Log in</Button>
+            </Link>
+            <Link href="/signup">
+              <Button>Sign up</Button>
+            </Link>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </header>
+
+      {/* Hero Section */}
+      <section className="py-20 bg-gradient-to-b from-white to-gray-50">
+        <div className="container flex flex-col items-center text-center">
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
+            Craft Perfect Cover Letters{" "}
+            <span className="text-primary">in Seconds</span>
+          </h1>
+          <p className="text-xl text-gray-600 max-w-2xl mb-10">
+            AI-powered cover letters tailored to your resume and the job
+            description. Stand out from the crowd and land your dream job.
+          </p>
+          <Link href="/signup">
+            <Button size="lg" className="px-8 py-6 text-lg">
+              Get Started <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </Link>
+          <div className="mt-8 text-sm text-gray-500">
+            20 free cover letters every month. No credit card required.
+          </div>
+          <div className="mt-16 w-full max-w-4xl rounded-lg border shadow-lg overflow-hidden">
+            <img
+              src="/placeholder.svg?height=600&width=1000"
+              alt="CoverCraft Dashboard Preview"
+              className="w-full h-auto"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20">
+        <div className="container">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
+            How It Works
+          </h2>
+          <div className="grid md:grid-cols-4 gap-8">
+            {[
+              {
+                icon: <User className="h-10 w-10 text-primary" />,
+                title: "Create an account",
+                description:
+                  "Sign up for free and get 20 cover letters per month.",
+              },
+              {
+                icon: <Upload className="h-10 w-10 text-primary" />,
+                title: "Upload your resume",
+                description: "Add your details or upload your existing resume.",
+              },
+              {
+                icon: <FileText className="h-10 w-10 text-primary" />,
+                title: "Generate cover letter",
+                description:
+                  "Paste a job description and generate a tailored cover letter.",
+              },
+              {
+                icon: <MessageSquare className="h-10 w-10 text-primary" />,
+                title: "Refine with AI",
+                description: "Chat with our AI to perfect your cover letter.",
+              },
+            ].map((feature, index) => (
+              <div
+                key={index}
+                className="flex flex-col items-center text-center p-6 rounded-lg border"
+              >
+                <div className="mb-4">{feature.icon}</div>
+                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                <p className="text-gray-600">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-20 bg-gray-50">
+        <div className="container">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
+            What Our Users Say
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                quote:
+                  "CoverCraft helped me land my dream job at a tech company. The AI-generated cover letter was perfect!",
+                author: "Sarah J.",
+                role: "Software Engineer",
+              },
+              {
+                quote:
+                  "I was struggling with writing cover letters until I found CoverCraft. Now I can apply to multiple jobs in minutes.",
+                author: "Michael T.",
+                role: "Marketing Specialist",
+              },
+              {
+                quote:
+                  "The chat feature is amazing! It helped me refine my cover letter and make it sound more professional.",
+                author: "Emily R.",
+                role: "Product Manager",
+              },
+            ].map((testimonial, index) => (
+              <div key={index} className="p-6 rounded-lg border bg-white">
+                <p className="text-gray-600 mb-4">"{testimonial.quote}"</p>
+                <div className="font-semibold">{testimonial.author}</div>
+                <div className="text-sm text-gray-500">{testimonial.role}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-primary text-primary-foreground">
+        <div className="container flex flex-col items-center text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            Ready to Craft Your Perfect Cover Letter?
+          </h2>
+          <p className="text-xl max-w-2xl mb-10 text-primary-foreground/90">
+            Join thousands of job seekers who have improved their job
+            application success rate with CoverCraft.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Link href="/signup">
+              <Button size="lg" variant="secondary" className="px-8">
+                Sign up for free
+              </Button>
+            </Link>
+            <Link href="/pricing">
+              <Button
+                size="lg"
+                variant="outline"
+                className="px-8 bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10"
+              >
+                View pricing
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t py-12 mt-auto">
+        <div className="container">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="mb-6 md:mb-0">
+              <Link href="/" className="text-xl font-bold">
+                CoverCraft
+              </Link>
+              <p className="text-gray-500 mt-2">
+                © 2025 CoverCraft. All rights reserved.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-16">
+              <div>
+                <h3 className="font-semibold mb-3">Product</h3>
+                <ul className="space-y-2">
+                  <li>
+                    <Link
+                      href="/features"
+                      className="text-gray-500 hover:text-gray-900"
+                    >
+                      Features
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/pricing"
+                      className="text-gray-500 hover:text-gray-900"
+                    >
+                      Pricing
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-3">Company</h3>
+                <ul className="space-y-2">
+                  <li>
+                    <Link
+                      href="/about"
+                      className="text-gray-500 hover:text-gray-900"
+                    >
+                      About
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/contact"
+                      className="text-gray-500 hover:text-gray-900"
+                    >
+                      Contact
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-3">Legal</h3>
+                <ul className="space-y-2">
+                  <li>
+                    <Link
+                      href="/privacy"
+                      className="text-gray-500 hover:text-gray-900"
+                    >
+                      Privacy
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/terms"
+                      className="text-gray-500 hover:text-gray-900"
+                    >
+                      Terms
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
       </footer>
     </div>
   );
