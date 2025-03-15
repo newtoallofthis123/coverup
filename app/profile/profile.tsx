@@ -116,31 +116,11 @@ export default function ProfilePage({ user }: { user: string }) {
 
     setWorkExperience(works);
 
-    setEducation(
-      Object.entries(educs || {}).map(([institution, degree], index) => ({
-        id: `${index + 1}`,
-        institution,
-        degree: String(degree).split(', ')[0],
-        startDate: '',
-        endDate: String(degree).split(', ')[1] || '',
-      }))
-    );
+    setEducation(educs);
 
     setSkills(data.skills || '');
-    setProjects(
-      Object.entries(projs || {}).map(([name, description], index) => ({
-        id: `${index + 1}`,
-        name,
-        description: String(description),
-      }))
-    );
-    setAchievements(
-      Object.entries(achis || {}).map(([name, description], index) => ({
-        id: `${index + 1}`,
-        name,
-        description: String(description),
-      }))
-    );
+    setProjects(projs);
+    setAchievements(achis);
 
     setOther(others || { Hobbies: '', Languages: '' });
   }
