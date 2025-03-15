@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import * as pdfjsLib from 'pdfjs-dist';
 import {
   Card,
   CardContent,
@@ -17,8 +18,9 @@ import {
 } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft, FileText, Plus, Save, Upload } from 'lucide-react';
+import { google } from '@ai-sdk/google';
 
-import { BACKEND_URL } from '@/lib/consts';
+import { BACKEND_URL, PARSER_URL } from '@/lib/consts';
 import SignInNav from '@/components/custom/signin-nav';
 
 type WorkExperience = {
@@ -84,6 +86,64 @@ export default function ProfilePage({ user }: { user: string }) {
   const postUrl = `${BACKEND_URL}/api/resumes`;
   const putUrl = `${BACKEND_URL}/api/resumes/${resumeId}`;
   const [url, setUrl] = useState(postUrl);
+  const [pdfText, setPdfText] = useState('');
+  const [error, setError] = useState('');
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+
+  function parseData(data: any) {
+    setResumeId(data.id);
+    setPersonalInfo({
+      firstName: data.first_name || '',
+      lastName: data.last_name || '',
+      email: data.email || '',
+      phone: data.phone || '',
+      summary: data.summary || '',
+    });
+
+    setSocial(
+      Object.entries(data.social || {}).map(([platform, url], index) => ({
+        id: `${index + 1}`,
+        platform,
+        url: String(url),
+      }))
+    );
+
+    const works = JSON.parse(data.work || '{}');
+    const educs = JSON.parse(data.education || '{}');
+    const achis = JSON.parse(data.achievements || '{}');
+    const projs = JSON.parse(data.projects || '{}');
+    const others = JSON.parse(data.other || '{}');
+
+    setWorkExperience(works);
+
+    setEducation(
+      Object.entries(educs || {}).map(([institution, degree], index) => ({
+        id: `${index + 1}`,
+        institution,
+        degree: String(degree).split(', ')[0],
+        startDate: '',
+        endDate: String(degree).split(', ')[1] || '',
+      }))
+    );
+
+    setSkills(data.skills || '');
+    setProjects(
+      Object.entries(projs || {}).map(([name, description], index) => ({
+        id: `${index + 1}`,
+        name,
+        description: String(description),
+      }))
+    );
+    setAchievements(
+      Object.entries(achis || {}).map(([name, description], index) => ({
+        id: `${index + 1}`,
+        name,
+        description: String(description),
+      }))
+    );
+
+    setOther(others || { Hobbies: '', Languages: '' });
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -95,73 +155,8 @@ export default function ProfilePage({ user }: { user: string }) {
         if (response.ok) {
           setUrl(putUrl);
           data = await response.json();
-          setResumeId(data.id);
-          setPersonalInfo({
-            firstName: data.first_name || '',
-            lastName: data.last_name || '',
-            email: data.email || '',
-            phone: data.phone || '',
-            summary: data.summary || '',
-          });
-
-          setSocial(
-            Object.entries(data.social || {}).map(([platform, url], index) => ({
-              id: `${index + 1}`,
-              platform,
-              url: String(url),
-            }))
-          );
-
-          setWorkExperience(
-            Object.entries(data.work || {}).map(([company, title], index) => ({
-              id: `${index + 1}`,
-              company,
-              title: String(title).split(' (')[0],
-              startDate:
-                String(title)
-                  .match(/\(([^)]+)\)/)?.[1]
-                  ?.split(' - ')[0] || '',
-              endDate:
-                String(title)
-                  .match(/\(([^)]+)\)/)?.[1]
-                  ?.split(' - ')[1] || '',
-              description: '',
-            }))
-          );
-
-          setEducation(
-            Object.entries(data.education || {}).map(
-              ([institution, degree], index) => ({
-                id: `${index + 1}`,
-                institution,
-                degree: String(degree).split(', ')[0],
-                startDate: '',
-                endDate: String(degree).split(', ')[1] || '',
-              })
-            )
-          );
-
-          setSkills(data.skills || '');
-          setProjects(
-            Object.entries(data.projects || {}).map(
-              ([name, description], index) => ({
-                id: `${index + 1}`,
-                name,
-                description: String(description),
-              })
-            )
-          );
-          setAchievements(
-            Object.entries(data.achievements || {}).map(
-              ([name, description], index) => ({
-                id: `${index + 1}`,
-                name,
-                description: String(description),
-              })
-            )
-          );
-
-          setOther(data.other || { Hobbies: '', Languages: '' });
+          console.log(data);
+          parseData(data);
         } else {
           console.log('Error fetching data:', response.statusText);
         }
@@ -299,6 +294,25 @@ export default function ProfilePage({ user }: { user: string }) {
     }
   };
 
+  const handleResumeUpload = async () => {
+    if (!resumeFile) {
+      alert('Please select a file to upload');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', resumeFile);
+
+    // send multi-part form data to PARSER_URL/parse
+    const res = await fetch(`${PARSER_URL}/parse`, {
+      method: 'POST',
+      body: formData,
+    });
+    const data = await res.json();
+    const json_data = JSON.parse(data['data']);
+    console.log(json_data);
+  };
+
   const handleAddSocial = () => {
     const newId = Date.now().toString();
     setSocial((prev) => [...prev, { id: newId, platform: '', url: '' }]);
@@ -318,32 +332,15 @@ export default function ProfilePage({ user }: { user: string }) {
       social: Object.fromEntries(
         social.map((item) => [item.platform, item.url])
       ),
-      work: Object.fromEntries(
-        workExperience.map((job) => [
-          job.company,
-          job.title,
-          job.startDate,
-          job.endDate,
-          job.description,
-        ])
-      ),
-      education: Object.fromEntries(
-        education.map((edu) => [
-          edu.institution,
-          edu.degree,
-          edu.startDate,
-          edu.endDate,
-        ])
-      ),
-      skills,
-      projects: Object.fromEntries(
-        projects.map((proj) => [proj.name, proj.description])
-      ),
-      achievements: Object.fromEntries(
-        achievements.map((ach) => [ach.name, ach.description])
-      ),
-      other,
+      work: JSON.stringify(workExperience),
+      education: JSON.stringify(education),
+      skills: skills,
+      projects: JSON.stringify(projects),
+      achievements: JSON.stringify(achievements),
+      other: JSON.stringify(other),
     };
+
+    console.log('Profile', workExperience, education, projects, achievements);
 
     const res = await fetch(url, {
       method: url === postUrl ? 'POST' : 'PUT',
@@ -356,9 +353,12 @@ export default function ProfilePage({ user }: { user: string }) {
       }),
     });
 
+    const resp = await res.json();
+    console.log('Response:', resp);
     if (res.ok) {
       alert('Profile saved successfully!');
     } else {
+      console.error('Failed to save profile:', resp);
       alert('Failed to save profile');
     }
   };
@@ -1048,7 +1048,16 @@ export default function ProfilePage({ user }: { user: string }) {
                               Drag and drop your resume, or
                             </p>
                             <label htmlFor="resume-upload">
-                              <Button variant="outline" size="sm" type="button">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                type="button"
+                                onClick={() =>
+                                  document
+                                    .getElementById('resume-upload')
+                                    ?.click()
+                                }
+                              >
                                 Browse files
                               </Button>
                               <Input
@@ -1069,7 +1078,7 @@ export default function ProfilePage({ user }: { user: string }) {
                   </div>
                 </CardContent>
                 <CardFooter className="flex justify-end">
-                  <Button onClick={handleSave} disabled={!resumeFile}>
+                  <Button onClick={handleResumeUpload} disabled={!resumeFile}>
                     <Save className="mr-2 h-4 w-4" />
                     Parse Resume
                   </Button>
