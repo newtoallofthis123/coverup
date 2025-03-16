@@ -84,12 +84,13 @@ export default function ProfilePage({ user }: { user: string }) {
   const [resumeId, setResumeId] = useState<string | null>(null);
   const userId = user;
   const postUrl = `${BACKEND_URL}/api/resumes`;
-  const putUrl = `${BACKEND_URL}/api/resumes/${resumeId}`;
+  const [putUrl, setPutUrl] = useState("");
   const [url, setUrl] = useState(postUrl);
   const [dataLoaded, setDataLoaded] = useState(false);
 
   function parseData(data: any) {
     setResumeId(data.id);
+    setPutUrl(`${BACKEND_URL}/api/resumes/${data.id}`);
     setPersonalInfo({
       firstName: data.first_name || '',
       lastName: data.last_name || '',
