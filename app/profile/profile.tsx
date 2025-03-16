@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import * as pdfjsLib from 'pdfjs-dist';
 import {
   Card,
   CardContent,
@@ -22,6 +21,7 @@ import { google } from '@ai-sdk/google';
 
 import { BACKEND_URL, PARSER_URL } from '@/lib/consts';
 import SignInNav from '@/components/custom/signin-nav';
+import Loading from '../loading';
 
 type WorkExperience = {
   id: string;
@@ -86,9 +86,7 @@ export default function ProfilePage({ user }: { user: string }) {
   const postUrl = `${BACKEND_URL}/api/resumes`;
   const putUrl = `${BACKEND_URL}/api/resumes/${resumeId}`;
   const [url, setUrl] = useState(postUrl);
-  const [pdfText, setPdfText] = useState('');
-  const [error, setError] = useState('');
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+  const [dataLoaded, setDataLoaded] = useState(false);
 
   function parseData(data: any) {
     setResumeId(data.id);
@@ -108,10 +106,15 @@ export default function ProfilePage({ user }: { user: string }) {
       }))
     );
 
-    const works = JSON.parse(data.work || '{}');
-    const educs = JSON.parse(data.education || '{}');
-    const achis = JSON.parse(data.achievements || '{}');
-    const projs = JSON.parse(data.projects || '{}');
+    data.work = data.work.replace(/\n/g, '\\n');
+    data.education = data.education.replace(/\n/g, '\\n');
+    data.achievements = data.achievements.replace(/\n/g, '\\n');
+    data.projects = data.projects.replace(/\n/g, '\\n');
+
+    const works = JSON.parse(data.work || '[]');
+    const educs = JSON.parse(data.education || '[]');
+    const achis = JSON.parse(data.achievements || '[]');
+    const projs = JSON.parse(data.projects || '[]');
     const others = JSON.parse(data.other || '{}');
 
     setWorkExperience(works);
@@ -127,6 +130,10 @@ export default function ProfilePage({ user }: { user: string }) {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (dataLoaded) {
+        return;
+      }
+      console.log('Calling useEffect');
       try {
         const response = await fetch(
           `${BACKEND_URL}/api/resumes/user/${userId}`
@@ -134,6 +141,7 @@ export default function ProfilePage({ user }: { user: string }) {
         let data;
         if (response.ok) {
           setUrl(putUrl);
+          setDataLoaded(true);
           data = await response.json();
           console.log(data);
           parseData(data);
@@ -148,7 +156,7 @@ export default function ProfilePage({ user }: { user: string }) {
     };
 
     fetchData();
-  }, [userId, putUrl]);
+  }, [userId, putUrl, dataLoaded]);
 
   const handlePersonalInfoChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -283,14 +291,18 @@ export default function ProfilePage({ user }: { user: string }) {
     const formData = new FormData();
     formData.append('file', resumeFile);
 
-    // send multi-part form data to PARSER_URL/parse
+    setLoading(true);
+
     const res = await fetch(`${PARSER_URL}/parse`, {
       method: 'POST',
       body: formData,
     });
     const data = await res.json();
+    data['data'] = data['data'].replace(/`/g, "'");
     const json_data = JSON.parse(data['data']);
     console.log(json_data);
+    parseData(json_data);
+    setLoading(false);
   };
 
   const handleAddSocial = () => {
@@ -344,7 +356,7 @@ export default function ProfilePage({ user }: { user: string }) {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return (
@@ -1043,7 +1055,7 @@ export default function ProfilePage({ user }: { user: string }) {
                               <Input
                                 id="resume-upload"
                                 type="file"
-                                accept=".pdf,.doc,.docx"
+                                accept=".pdf,.doc,.docx,.txt"
                                 className="hidden"
                                 onChange={handleFileChange}
                               />

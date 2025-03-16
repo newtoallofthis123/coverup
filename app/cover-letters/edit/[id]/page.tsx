@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/card';
 import { ArrowLeft, Download, MessageSquare, Save } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BACKEND_URL } from '@/lib/consts';
+import { BACKEND_URL, PARSER_URL } from '@/lib/consts';
 import { usePathname } from 'next/navigation';
 import SignInNav from '@/components/custom/signin-nav';
 
@@ -63,21 +63,25 @@ export default function EditCoverLetterPage() {
     }, 1000);
   };
 
-  const handleDownload = () => {
-    // Create a blob with the cover letter text
-    const blob = new Blob([coverLetter], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
+  const handleDownload = async () => {
+    const response = await fetch(`${PARSER_URL}/create`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        text: coverLetter,
+      }),
+    });
 
-    // Create a link and trigger download
+    // get response as a application/pdf blob
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.txt`;
-    document.body.appendChild(a);
+    a.download = `${title}.pdf`;
     a.click();
-
-    // Clean up
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    window.URL.revokeObjectURL(url);
   };
 
   return (

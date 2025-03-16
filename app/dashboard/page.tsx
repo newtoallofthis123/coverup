@@ -37,6 +37,11 @@ export default async function DashboardPage() {
 
   const usedCoverLetters = data.count;
   const letters: Letter[] = data.letters;
+  const hasResume = data.has_resume;
+
+  if (!hasResume) { 
+    redirect('/profile');
+  }
 
   return (
     <div className="min-h-screen flex flex-col">

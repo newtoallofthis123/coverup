@@ -17,7 +17,8 @@ import {
 } from "@/components/ui/card";
 import { ArrowLeft, Send, Download, Save, User, Bot } from "lucide-react";
 import { streamText } from "ai";
-import { openai } from "@ai-sdk/openai";
+import { google } from "@ai-sdk/google";
+import SignInNav from "@/components/custom/signin-nav";
 
 type Message = {
   role: "user" | "assistant";
@@ -74,10 +75,10 @@ export default function ChatPage() {
       // Prepare the context for the AI
       const context = `
         You are a professional cover letter assistant. Help the user refine their cover letter.
-        
+
         Here is the current cover letter:
         ${coverLetter}
-        
+
         User message: ${userMessage}
       `;
 
@@ -88,7 +89,7 @@ export default function ChatPage() {
       let fullResponse = "";
 
       const result = streamText({
-        model: openai("gpt-4o"),
+        model: google("gemini-2.0-flash-001"),
         prompt: context,
         onChunk: ({ chunk }) => {
           if (chunk.type === "text-delta") {
@@ -156,25 +157,7 @@ export default function ChatPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Navigation */}
-      <header className="border-b">
-        <div className="container flex items-center justify-between py-4">
-          <Link href="/" className="text-2xl font-bold">
-            CoverUp
-          </Link>
-          <nav className="hidden md:flex items-center gap-6">
-            <Link href="/dashboard" className="font-medium">
-              Dashboard
-            </Link>
-            <Link href="/cover-letters" className="font-medium">
-              My Cover Letters
-            </Link>
-            <Link href="/profile" className="font-medium">
-              Profile
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <SignInNav />
 
       <main className="flex-grow py-12">
         <div className="container max-w-4xl">
