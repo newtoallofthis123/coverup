@@ -1,27 +1,27 @@
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import {
   ArrowRight,
   FileText,
   MessageSquare,
   Upload,
   User,
-} from 'lucide-react';
+} from "lucide-react";
 import {
   SignInButton,
   SignUpButton,
   SignedIn,
   SignedOut,
   UserButton,
-} from '@clerk/nextjs';
-import Image from 'next/image';
-import { currentUser } from '@clerk/nextjs/server';
-import { redirect } from 'next/navigation';
+} from "@clerk/nextjs";
+import Image from "next/image";
+import { currentUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 export default async function Home() {
   const userId = await currentUser();
   if (userId) {
-    redirect('/dashboard');
+    redirect("/dashboard");
   }
 
   return (
@@ -62,7 +62,7 @@ export default async function Home() {
       <section className="py-20 bg-gradient-to-b from-white to-gray-50">
         <div className="container flex flex-col items-center text-center">
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
-            Craft Perfect Cover Letters{' '}
+            Craft Perfect Cover Letters{" "}
             <span className="text-primary">in Seconds</span>
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mb-10">
@@ -91,25 +91,25 @@ export default async function Home() {
             {[
               {
                 icon: <User className="h-10 w-10 text-primary" />,
-                title: 'Create an account',
+                title: "Create an account",
                 description:
-                  'Sign up for free and get 20 cover letters per month.',
+                  "Sign up for free and get 20 cover letters per month.",
               },
               {
                 icon: <Upload className="h-10 w-10 text-primary" />,
-                title: 'Upload your resume',
-                description: 'Add your details or upload your existing resume.',
+                title: "Upload your resume",
+                description: "Add your details or upload your existing resume.",
               },
               {
                 icon: <FileText className="h-10 w-10 text-primary" />,
-                title: 'Generate cover letter',
+                title: "Generate cover letter",
                 description:
-                  'Paste a job description and generate a tailored cover letter.',
+                  "Paste a job description and generate a tailored cover letter.",
               },
               {
                 icon: <MessageSquare className="h-10 w-10 text-primary" />,
-                title: 'Refine with AI',
-                description: 'Chat with our AI to perfect your cover letter.',
+                title: "Refine with AI",
+                description: "Chat with our AI to perfect your cover letter.",
               },
             ].map((feature, index) => (
               <div
@@ -135,21 +135,21 @@ export default async function Home() {
             {[
               {
                 quote:
-                  'CoverUp helped me land my dream job at a tech company. The AI-generated cover letter was perfect!',
-                author: 'Sarah J.',
-                role: 'Software Engineer',
+                  "CoverUp helped me land my dream job at a tech company. The AI-generated cover letter was perfect!",
+                author: "Sarah J.",
+                role: "Software Engineer",
               },
               {
                 quote:
-                  'I was struggling with writing cover letters until I found CoverUp. Now I can apply to multiple jobs in minutes.',
-                author: 'Michael T.',
-                role: 'Marketing Specialist',
+                  "I was struggling with writing cover letters until I found CoverUp. Now I can apply to multiple jobs in minutes.",
+                author: "Michael T.",
+                role: "Marketing Specialist",
               },
               {
                 quote:
-                  'The chat feature is amazing! It helped me refine my cover letter and make it sound more professional.',
-                author: 'Emily R.',
-                role: 'Product Manager',
+                  "The chat feature is amazing! It helped me refine my cover letter and make it sound more professional.",
+                author: "Emily R.",
+                role: "Product Manager",
               },
             ].map((testimonial, index) => (
               <div key={index} className="p-6 rounded-lg border bg-white">

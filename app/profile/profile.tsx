@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import type React from 'react';
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import type React from "react";
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Card,
   CardContent,
@@ -14,14 +14,13 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, FileText, Plus, Save, Upload } from 'lucide-react';
-import { google } from '@ai-sdk/google';
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ArrowLeft, FileText, Plus, Save, Upload } from "lucide-react";
 
-import { BACKEND_URL, PARSER_URL } from '@/lib/consts';
-import SignInNav from '@/components/custom/signin-nav';
-import Loading from '../loading';
+import { BACKEND_URL, PARSER_URL } from "@/lib/consts";
+import SignInNav from "@/components/custom/signin-nav";
+import Loading from "../loading";
 
 type WorkExperience = {
   id: string;
@@ -67,19 +66,19 @@ type Other = {
 export default function ProfilePage({ user }: { user: string }) {
   const [loading, setLoading] = useState(true);
   const [personalInfo, setPersonalInfo] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    summary: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    summary: "",
   });
   const [social, setSocial] = useState<Social[]>([]);
   const [workExperience, setWorkExperience] = useState<WorkExperience[]>([]);
   const [education, setEducation] = useState<Education[]>([]);
-  const [skills, setSkills] = useState('');
+  const [skills, setSkills] = useState("");
   const [projects, setProjects] = useState<Project[]>([]);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
-  const [other, setOther] = useState<Other>({ Hobbies: '', Languages: '' });
+  const [other, setOther] = useState<Other>({ Hobbies: "", Languages: "" });
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [resumeId, setResumeId] = useState<string | null>(null);
   const userId = user;
@@ -92,11 +91,11 @@ export default function ProfilePage({ user }: { user: string }) {
     setResumeId(data.id);
     setPutUrl(`${BACKEND_URL}/api/resumes/${data.id}`);
     setPersonalInfo({
-      firstName: data.first_name || '',
-      lastName: data.last_name || '',
-      email: data.email || '',
-      phone: data.phone || '',
-      summary: data.summary || '',
+      firstName: data.first_name || "",
+      lastName: data.last_name || "",
+      email: data.email || "",
+      phone: data.phone || "",
+      summary: data.summary || "",
     });
 
     setSocial(
@@ -107,26 +106,26 @@ export default function ProfilePage({ user }: { user: string }) {
       }))
     );
 
-    data.work = data.work.replace(/\n/g, '\\n');
-    data.education = data.education.replace(/\n/g, '\\n');
-    data.achievements = data.achievements.replace(/\n/g, '\\n');
-    data.projects = data.projects.replace(/\n/g, '\\n');
+    data.work = data.work.replace(/\n/g, "\\n");
+    data.education = data.education.replace(/\n/g, "\\n");
+    data.achievements = data.achievements.replace(/\n/g, "\\n");
+    data.projects = data.projects.replace(/\n/g, "\\n");
 
-    const works = JSON.parse(data.work || '[]');
-    const educs = JSON.parse(data.education || '[]');
-    const achis = JSON.parse(data.achievements || '[]');
-    const projs = JSON.parse(data.projects || '[]');
-    const others = JSON.parse(data.other || '{}');
+    const works = JSON.parse(data.work || "[]");
+    const educs = JSON.parse(data.education || "[]");
+    const achis = JSON.parse(data.achievements || "[]");
+    const projs = JSON.parse(data.projects || "[]");
+    const others = JSON.parse(data.other || "{}");
 
     setWorkExperience(works);
 
     setEducation(educs);
 
-    setSkills(data.skills || '');
+    setSkills(data.skills || "");
     setProjects(projs);
     setAchievements(achis);
 
-    setOther(others || { Hobbies: '', Languages: '' });
+    setOther(others || { Hobbies: "", Languages: "" });
   }
 
   useEffect(() => {
@@ -134,7 +133,7 @@ export default function ProfilePage({ user }: { user: string }) {
       if (dataLoaded) {
         return;
       }
-      console.log('Calling useEffect');
+      console.log("Calling useEffect");
       try {
         const response = await fetch(
           `${BACKEND_URL}/api/resumes/user/${userId}`
@@ -147,10 +146,10 @@ export default function ProfilePage({ user }: { user: string }) {
           console.log(data);
           parseData(data);
         } else {
-          console.log('Error fetching data:', response.statusText);
+          console.log("Error fetching data:", response.statusText);
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
@@ -231,11 +230,11 @@ export default function ProfilePage({ user }: { user: string }) {
       ...prev,
       {
         id: newId,
-        title: '',
-        company: '',
-        startDate: '',
-        endDate: '',
-        description: '',
+        title: "",
+        company: "",
+        startDate: "",
+        endDate: "",
+        description: "",
       },
     ]);
   };
@@ -244,20 +243,20 @@ export default function ProfilePage({ user }: { user: string }) {
     const newId = Date.now().toString();
     setEducation((prev) => [
       ...prev,
-      { id: newId, degree: '', institution: '', startDate: '', endDate: '' },
+      { id: newId, degree: "", institution: "", startDate: "", endDate: "" },
     ]);
   };
 
   const handleAddProject = () => {
     const newId = Date.now().toString();
-    setProjects((prev) => [...prev, { id: newId, name: '', description: '' }]);
+    setProjects((prev) => [...prev, { id: newId, name: "", description: "" }]);
   };
 
   const handleAddAchievement = () => {
     const newId = Date.now().toString();
     setAchievements((prev) => [
       ...prev,
-      { id: newId, name: '', description: '' },
+      { id: newId, name: "", description: "" },
     ]);
   };
 
@@ -285,22 +284,22 @@ export default function ProfilePage({ user }: { user: string }) {
 
   const handleResumeUpload = async () => {
     if (!resumeFile) {
-      alert('Please select a file to upload');
+      alert("Please select a file to upload");
       return;
     }
 
     const formData = new FormData();
-    formData.append('file', resumeFile);
+    formData.append("file", resumeFile);
 
     setLoading(true);
 
     const res = await fetch(`${PARSER_URL}/parse`, {
-      method: 'POST',
+      method: "POST",
       body: formData,
     });
     const data = await res.json();
-    data['data'] = data['data'].replace(/`/g, "'");
-    const json_data = JSON.parse(data['data']);
+    data["data"] = data["data"].replace(/`/g, "'");
+    const json_data = JSON.parse(data["data"]);
     console.log(json_data);
     parseData(json_data);
     setLoading(false);
@@ -308,7 +307,7 @@ export default function ProfilePage({ user }: { user: string }) {
 
   const handleAddSocial = () => {
     const newId = Date.now().toString();
-    setSocial((prev) => [...prev, { id: newId, platform: '', url: '' }]);
+    setSocial((prev) => [...prev, { id: newId, platform: "", url: "" }]);
   };
 
   const handleRemoveSocial = (id: string) => {
@@ -333,12 +332,12 @@ export default function ProfilePage({ user }: { user: string }) {
       other: JSON.stringify(other),
     };
 
-    console.log('Profile', workExperience, education, projects, achievements);
+    console.log("Profile", workExperience, education, projects, achievements);
 
     const res = await fetch(url, {
-      method: url === postUrl ? 'POST' : 'PUT',
+      method: url === postUrl ? "POST" : "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         user_id: userId,
@@ -347,12 +346,12 @@ export default function ProfilePage({ user }: { user: string }) {
     });
 
     const resp = await res.json();
-    console.log('Response:', resp);
+    console.log("Response:", resp);
     if (res.ok) {
-      alert('Profile saved successfully!');
+      alert("Profile saved successfully!");
     } else {
-      console.error('Failed to save profile:', resp);
-      alert('Failed to save profile');
+      console.error("Failed to save profile:", resp);
+      alert("Failed to save profile");
     }
   };
 
@@ -498,7 +497,7 @@ export default function ProfilePage({ user }: { user: string }) {
                               onChange={(e) =>
                                 handleSocialChange(
                                   profile.id,
-                                  'platform',
+                                  "platform",
                                   e.target.value
                                 )
                               }
@@ -513,7 +512,7 @@ export default function ProfilePage({ user }: { user: string }) {
                               onChange={(e) =>
                                 handleSocialChange(
                                   profile.id,
-                                  'url',
+                                  "url",
                                   e.target.value
                                 )
                               }
@@ -576,7 +575,7 @@ export default function ProfilePage({ user }: { user: string }) {
                               onChange={(e) =>
                                 handleWorkExperienceChange(
                                   job.id,
-                                  'title',
+                                  "title",
                                   e.target.value
                                 )
                               }
@@ -590,7 +589,7 @@ export default function ProfilePage({ user }: { user: string }) {
                               onChange={(e) =>
                                 handleWorkExperienceChange(
                                   job.id,
-                                  'company',
+                                  "company",
                                   e.target.value
                                 )
                               }
@@ -607,7 +606,7 @@ export default function ProfilePage({ user }: { user: string }) {
                               onChange={(e) =>
                                 handleWorkExperienceChange(
                                   job.id,
-                                  'startDate',
+                                  "startDate",
                                   e.target.value
                                 )
                               }
@@ -625,7 +624,7 @@ export default function ProfilePage({ user }: { user: string }) {
                               onChange={(e) =>
                                 handleWorkExperienceChange(
                                   job.id,
-                                  'endDate',
+                                  "endDate",
                                   e.target.value
                                 )
                               }
@@ -641,7 +640,7 @@ export default function ProfilePage({ user }: { user: string }) {
                               onChange={(e) =>
                                 handleWorkExperienceChange(
                                   job.id,
-                                  'description',
+                                  "description",
                                   e.target.value
                                 )
                               }
@@ -705,7 +704,7 @@ export default function ProfilePage({ user }: { user: string }) {
                               onChange={(e) =>
                                 handleEducationChange(
                                   edu.id,
-                                  'degree',
+                                  "degree",
                                   e.target.value
                                 )
                               }
@@ -721,7 +720,7 @@ export default function ProfilePage({ user }: { user: string }) {
                               onChange={(e) =>
                                 handleEducationChange(
                                   edu.id,
-                                  'institution',
+                                  "institution",
                                   e.target.value
                                 )
                               }
@@ -738,7 +737,7 @@ export default function ProfilePage({ user }: { user: string }) {
                               onChange={(e) =>
                                 handleEducationChange(
                                   edu.id,
-                                  'startDate',
+                                  "startDate",
                                   e.target.value
                                 )
                               }
@@ -755,7 +754,7 @@ export default function ProfilePage({ user }: { user: string }) {
                               onChange={(e) =>
                                 handleEducationChange(
                                   edu.id,
-                                  'endDate',
+                                  "endDate",
                                   e.target.value
                                 )
                               }
@@ -847,7 +846,7 @@ export default function ProfilePage({ user }: { user: string }) {
                             onChange={(e) =>
                               handleProjectChange(
                                 proj.id,
-                                'name',
+                                "name",
                                 e.target.value
                               )
                             }
@@ -864,7 +863,7 @@ export default function ProfilePage({ user }: { user: string }) {
                             onChange={(e) =>
                               handleProjectChange(
                                 proj.id,
-                                'description',
+                                "description",
                                 e.target.value
                               )
                             }
@@ -926,7 +925,7 @@ export default function ProfilePage({ user }: { user: string }) {
                             onChange={(e) =>
                               handleAchievementChange(
                                 ach.id,
-                                'name',
+                                "name",
                                 e.target.value
                               )
                             }
@@ -943,7 +942,7 @@ export default function ProfilePage({ user }: { user: string }) {
                             onChange={(e) =>
                               handleAchievementChange(
                                 ach.id,
-                                'description',
+                                "description",
                                 e.target.value
                               )
                             }
@@ -984,7 +983,7 @@ export default function ProfilePage({ user }: { user: string }) {
                         id="Hobbies"
                         name="Hobbies"
                         rows={3}
-                        value={other.Hobbies || ''}
+                        value={other.Hobbies || ""}
                         onChange={handleOtherChange}
                       />
                     </div>
@@ -994,7 +993,7 @@ export default function ProfilePage({ user }: { user: string }) {
                         id="Languages"
                         name="Languages"
                         rows={3}
-                        value={other.Languages || ''}
+                        value={other.Languages || ""}
                         onChange={handleOtherChange}
                       />
                     </div>
@@ -1047,7 +1046,7 @@ export default function ProfilePage({ user }: { user: string }) {
                                 type="button"
                                 onClick={() =>
                                   document
-                                    .getElementById('resume-upload')
+                                    .getElementById("resume-upload")
                                     ?.click()
                                 }
                               >

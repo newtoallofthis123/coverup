@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+import { useState } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Card,
   CardContent,
@@ -11,33 +11,33 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { ArrowLeft, Loader2 } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import SignInNav from '@/components/custom/signin-nav';
-import { BACKEND_URL } from '@/lib/consts';
+} from "@/components/ui/card";
+import { ArrowLeft, Loader2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import SignInNav from "@/components/custom/signin-nav";
+import { BACKEND_URL } from "@/lib/consts";
 
 export default function NewCoverLetterPage({ userId }: { userId: string }) {
-  const [jobDescription, setJobDescription] = useState('');
-  const [jobTitle, setJobTitle] = useState('');
+  const [jobDescription, setJobDescription] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [letterId, setLetterId] = useState('');
-  const [error, setError] = useState('');
+  const [letterId, setLetterId] = useState("");
+  const [error, setError] = useState("");
 
   const handleGenerate = async () => {
     if (!jobDescription.trim()) {
-      setError('Please enter a job description');
+      setError("Please enter a job description");
       return;
     }
 
-    setError('');
+    setError("");
     setIsGenerating(true);
 
     try {
       const res = await fetch(`${BACKEND_URL}/api/letters`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           letter: { title: jobTitle, job_description: jobDescription },
@@ -48,8 +48,8 @@ export default function NewCoverLetterPage({ userId }: { userId: string }) {
       const data = await res.json();
       setLetterId(data.letter.id);
     } catch (err) {
-      console.error('Error generating cover letter:', err);
-      setError('Failed to generate cover letter. Please try again.');
+      console.error("Error generating cover letter:", err);
+      setError("Failed to generate cover letter. Please try again.");
     } finally {
       setIsGenerating(false);
     }
@@ -115,7 +115,7 @@ export default function NewCoverLetterPage({ userId }: { userId: string }) {
                     Generating...
                   </>
                 ) : (
-                  'Generate Cover Letter'
+                  "Generate Cover Letter"
                 )}
               </Button>
             </CardFooter>

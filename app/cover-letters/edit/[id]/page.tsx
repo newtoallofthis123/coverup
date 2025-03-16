@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
@@ -12,20 +12,20 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { ArrowLeft, Download, MessageSquare, Save } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BACKEND_URL, PARSER_URL } from '@/lib/consts';
-import { usePathname } from 'next/navigation';
-import SignInNav from '@/components/custom/signin-nav';
+} from "@/components/ui/card";
+import { ArrowLeft, Download, MessageSquare, Save } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { BACKEND_URL, PARSER_URL } from "@/lib/consts";
+import { usePathname } from "next/navigation";
+import SignInNav from "@/components/custom/signin-nav";
 
 export default function EditCoverLetterPage() {
-  const [coverLetter, setCoverLetter] = useState('');
-  const [jobDescription, setJobDescription] = useState('');
-  const [title, setTitle] = useState('Cover Letter');
+  const [coverLetter, setCoverLetter] = useState("");
+  const [jobDescription, setJobDescription] = useState("");
+  const [title, setTitle] = useState("Cover Letter");
   const [isSaving, setIsSaving] = useState(false);
   const pathname = usePathname();
-  const id = pathname.split('/').pop();
+  const id = pathname.split("/").pop();
 
   useEffect(() => {
     const fetchLetter = async () => {
@@ -45,9 +45,9 @@ export default function EditCoverLetterPage() {
     setTimeout(async () => {
       setIsSaving(false);
       const res = await fetch(`${BACKEND_URL}/api/letters/${id}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           letter: {
@@ -58,16 +58,16 @@ export default function EditCoverLetterPage() {
       });
 
       if (res.ok) {
-        console.log('Cover letter saved');
+        console.log("Cover letter saved");
       }
     }, 1000);
   };
 
   const handleDownload = async () => {
     const response = await fetch(`${PARSER_URL}/create`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         text: coverLetter,
@@ -77,7 +77,7 @@ export default function EditCoverLetterPage() {
     // get response as a application/pdf blob
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     a.download = `${title}.pdf`;
     a.click();
@@ -140,7 +140,7 @@ export default function EditCoverLetterPage() {
                     </Button>
                     <Button onClick={handleSave} disabled={isSaving}>
                       <Save className="mr-2 h-4 w-4" />
-                      {isSaving ? 'Saving...' : 'Save & Continue'}
+                      {isSaving ? "Saving..." : "Save & Continue"}
                     </Button>
                   </div>
                 </CardFooter>

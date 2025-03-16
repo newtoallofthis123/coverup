@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,8 +10,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   FileText,
   Plus,
@@ -20,15 +20,15 @@ import {
   Download,
   Pencil,
   Trash2,
-} from 'lucide-react';
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import SignInNav from '@/components/custom/signin-nav';
-import { BACKEND_URL } from '@/lib/consts';
+} from "@/components/ui/dropdown-menu";
+import SignInNav from "@/components/custom/signin-nav";
+import { BACKEND_URL } from "@/lib/consts";
 
 type CoverLetter = {
   id: string;
@@ -39,7 +39,7 @@ type CoverLetter = {
 };
 
 export default function CoverLettersPage({ userId }: { userId: string }) {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [coverLetters, setCoverLetters] = useState<CoverLetter[]>([]);
 
   useEffect(() => {
@@ -62,15 +62,15 @@ export default function CoverLettersPage({ userId }: { userId: string }) {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
+    return new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
     }).format(date);
   };
 
   const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this cover letter?')) {
+    if (confirm("Are you sure you want to delete this cover letter?")) {
       setCoverLetters((prev) => prev.filter((letter) => letter.id !== id));
     }
   };
@@ -119,7 +119,7 @@ export default function CoverLettersPage({ userId }: { userId: string }) {
                 </h3>
                 <p className="text-gray-500 mb-6 text-center">
                   {searchQuery
-                    ? 'No cover letters match your search. Try a different query.'
+                    ? "No cover letters match your search. Try a different query."
                     : "You haven't created any cover letters yet."}
                 </p>
                 {!searchQuery && (

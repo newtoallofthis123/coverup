@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -7,13 +7,13 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { FileText, Plus, User } from 'lucide-react';
-import SignInNav from '@/components/custom/signin-nav';
-import { currentUser } from '@clerk/nextjs/server';
-import { redirect } from 'next/navigation';
-import { BACKEND_URL } from '@/lib/consts';
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { FileText, Plus, User } from "lucide-react";
+import SignInNav from "@/components/custom/signin-nav";
+import { currentUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+import { BACKEND_URL } from "@/lib/consts";
 
 type Letter = {
   id: number;
@@ -26,11 +26,11 @@ export default async function DashboardPage() {
   const totalCoverLetters = 20;
 
   if (!user) {
-    redirect('/sign-in');
+    redirect("/sign-in");
   }
 
   const res = await fetch(`${BACKEND_URL}/api/dashboard/${user.id}`, {
-    method: 'GET',
+    method: "GET",
   });
 
   const data = await res.json();
@@ -39,8 +39,8 @@ export default async function DashboardPage() {
   const letters: Letter[] = data.letters;
   const hasResume = data.has_resume;
 
-  if (!hasResume) { 
-    redirect('/profile');
+  if (!hasResume) {
+    redirect("/profile");
   }
 
   return (
