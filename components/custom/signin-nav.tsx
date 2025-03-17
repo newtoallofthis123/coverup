@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { UserButton, SignOutButton } from "@clerk/nextjs";
+import { DarkModeToggle } from "./dark-mode";
 
 export default function SignInNav() {
   return (
@@ -10,6 +11,14 @@ export default function SignInNav() {
         <Link href="/dashboard" className="text-2xl font-bold">
           <Image
             src="/coverup.jpeg"
+            className="dark:hidden"
+            alt="CoverUp Logo"
+            width={120}
+            height={120}
+          />
+          <Image
+            src="/coverup_dark.jpeg"
+            className="dark:block hidden"
             alt="CoverUp Logo"
             width={120}
             height={120}
@@ -19,7 +28,7 @@ export default function SignInNav() {
           <Link href="/dashboard" className="font-medium">
             Dashboard
           </Link>
-          <Link href="/cover-letters" className="font-medium">
+          <Link href="/letters" className="font-medium">
             History
           </Link>
           <Link href="/profile" className="font-medium">
@@ -27,6 +36,7 @@ export default function SignInNav() {
           </Link>
         </nav>
         <div className="flex items-center gap-4">
+          <DarkModeToggle />
           <Button variant="ghost" size="icon">
             <UserButton />
           </Button>

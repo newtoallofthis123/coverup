@@ -109,7 +109,7 @@ export default async function DashboardPage() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Link href="/cover-letters" className="w-full">
+                <Link href="/letters" className="w-full">
                   <Button variant="outline" className="w-full">
                     View all
                   </Button>
@@ -148,7 +148,7 @@ export default async function DashboardPage() {
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4">Create a Cover Letter</h2>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              <Link href="/cover-letters/new" className="block">
+              <Link href="/letters/new" className="block">
                 <Card className="h-full hover:border-primary/50 transition-colors">
                   <CardContent className="flex flex-col items-center justify-center h-full py-12">
                     <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">

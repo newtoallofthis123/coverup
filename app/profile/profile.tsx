@@ -18,9 +18,10 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, FileText, Plus, Save, Upload } from "lucide-react";
 
-import { BACKEND_URL, PARSER_URL } from "@/lib/consts";
+import { PARSER_URL } from "@/lib/consts";
 import SignInNav from "@/components/custom/signin-nav";
 import Loading from "../loading";
+import { toast } from "sonner";
 
 type WorkExperience = {
   id: string;
@@ -63,8 +64,18 @@ type Other = {
   Languages?: string;
 };
 
-export default function ProfilePage({ user }: { user: string }) {
-  const [loading, setLoading] = useState(true);
+export default function ProfilePage({
+  user,
+  data,
+  url,
+  method,
+}: {
+  user: string;
+  data: any;
+  url: string;
+  method: string;
+}) {
+  const [loading, setLoading] = useState(false);
   const [personalInfo, setPersonalInfo] = useState({
     firstName: "",
     lastName: "",
@@ -80,16 +91,13 @@ export default function ProfilePage({ user }: { user: string }) {
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [other, setOther] = useState<Other>({ Hobbies: "", Languages: "" });
   const [resumeFile, setResumeFile] = useState<File | null>(null);
-  const [resumeId, setResumeId] = useState<string | null>(null);
   const userId = user;
-  const postUrl = `${BACKEND_URL}/api/resumes`;
-  const [putUrl, setPutUrl] = useState("");
-  const [url, setUrl] = useState(postUrl);
-  const [dataLoaded, setDataLoaded] = useState(false);
+
+  useEffect(() => {
+    parseData(data);
+  }, [data]);
 
   function parseData(data: any) {
-    setResumeId(data.id);
-    setPutUrl(`${BACKEND_URL}/api/resumes/${data.id}`);
     setPersonalInfo({
       firstName: data.first_name || "",
       lastName: data.last_name || "",
@@ -103,7 +111,7 @@ export default function ProfilePage({ user }: { user: string }) {
         id: `${index + 1}`,
         platform,
         url: String(url),
-      }))
+      })),
     );
 
     data.work = data.work.replace(/\n/g, "\\n");
@@ -128,38 +136,8 @@ export default function ProfilePage({ user }: { user: string }) {
     setOther(others || { Hobbies: "", Languages: "" });
   }
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (dataLoaded) {
-        return;
-      }
-      console.log("Calling useEffect");
-      try {
-        const response = await fetch(
-          `${BACKEND_URL}/api/resumes/user/${userId}`
-        );
-        let data;
-        if (response.ok) {
-          setUrl(putUrl);
-          setDataLoaded(true);
-          data = await response.json();
-          console.log(data);
-          parseData(data);
-        } else {
-          console.log("Error fetching data:", response.statusText);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [userId, putUrl, dataLoaded]);
-
   const handlePersonalInfoChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setPersonalInfo((prev) => ({ ...prev, [name]: value }));
@@ -168,10 +146,10 @@ export default function ProfilePage({ user }: { user: string }) {
   const handleSocialChange = (
     id: string,
     field: keyof Social,
-    value: string
+    value: string,
   ) => {
     setSocial((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
+      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item)),
     );
   };
 
@@ -182,40 +160,40 @@ export default function ProfilePage({ user }: { user: string }) {
   const handleWorkExperienceChange = (
     id: string,
     field: keyof WorkExperience,
-    value: string
+    value: string,
   ) => {
     setWorkExperience((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
+      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item)),
     );
   };
 
   const handleEducationChange = (
     id: string,
     field: keyof Education,
-    value: string
+    value: string,
   ) => {
     setEducation((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
+      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item)),
     );
   };
 
   const handleProjectChange = (
     id: string,
     field: keyof Project,
-    value: string
+    value: string,
   ) => {
     setProjects((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
+      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item)),
     );
   };
 
   const handleAchievementChange = (
     id: string,
     field: keyof Achievement,
-    value: string
+    value: string,
   ) => {
     setAchievements((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
+      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item)),
     );
   };
 
@@ -284,7 +262,9 @@ export default function ProfilePage({ user }: { user: string }) {
 
   const handleResumeUpload = async () => {
     if (!resumeFile) {
-      alert("Please select a file to upload");
+      toast.error("Unable to upload file", {
+        description: "Please select a valid file to upload",
+      });
       return;
     }
 
@@ -303,6 +283,7 @@ export default function ProfilePage({ user }: { user: string }) {
     console.log(json_data);
     parseData(json_data);
     setLoading(false);
+    toast("Loaded in data from resume");
   };
 
   const handleAddSocial = () => {
@@ -322,7 +303,7 @@ export default function ProfilePage({ user }: { user: string }) {
       phone: personalInfo.phone,
       summary: personalInfo.summary,
       social: Object.fromEntries(
-        social.map((item) => [item.platform, item.url])
+        social.map((item) => [item.platform, item.url]),
       ),
       work: JSON.stringify(workExperience),
       education: JSON.stringify(education),
@@ -335,7 +316,7 @@ export default function ProfilePage({ user }: { user: string }) {
     console.log("Profile", workExperience, education, projects, achievements);
 
     const res = await fetch(url, {
-      method: url === postUrl ? "POST" : "PUT",
+      method: method,
       headers: {
         "Content-Type": "application/json",
       },
@@ -348,10 +329,14 @@ export default function ProfilePage({ user }: { user: string }) {
     const resp = await res.json();
     console.log("Response:", resp);
     if (res.ok) {
-      alert("Profile saved successfully!");
+      toast.success("Profile saved!", {
+        description: "Your profile has been saved succesfully!",
+      });
     } else {
       console.error("Failed to save profile:", resp);
-      alert("Failed to save profile");
+      toast.error("Unable to save profile!", {
+        description: "Please report the console errors to the developer",
+      });
     }
   };
 
@@ -498,7 +483,7 @@ export default function ProfilePage({ user }: { user: string }) {
                                 handleSocialChange(
                                   profile.id,
                                   "platform",
-                                  e.target.value
+                                  e.target.value,
                                 )
                               }
                               placeholder="e.g., LinkedIn, GitHub"
@@ -513,7 +498,7 @@ export default function ProfilePage({ user }: { user: string }) {
                                 handleSocialChange(
                                   profile.id,
                                   "url",
-                                  e.target.value
+                                  e.target.value,
                                 )
                               }
                               placeholder="https://"
@@ -576,7 +561,7 @@ export default function ProfilePage({ user }: { user: string }) {
                                 handleWorkExperienceChange(
                                   job.id,
                                   "title",
-                                  e.target.value
+                                  e.target.value,
                                 )
                               }
                             />
@@ -590,7 +575,7 @@ export default function ProfilePage({ user }: { user: string }) {
                                 handleWorkExperienceChange(
                                   job.id,
                                   "company",
-                                  e.target.value
+                                  e.target.value,
                                 )
                               }
                             />
@@ -607,7 +592,7 @@ export default function ProfilePage({ user }: { user: string }) {
                                 handleWorkExperienceChange(
                                   job.id,
                                   "startDate",
-                                  e.target.value
+                                  e.target.value,
                                 )
                               }
                             />
@@ -625,7 +610,7 @@ export default function ProfilePage({ user }: { user: string }) {
                                 handleWorkExperienceChange(
                                   job.id,
                                   "endDate",
-                                  e.target.value
+                                  e.target.value,
                                 )
                               }
                             />
@@ -641,7 +626,7 @@ export default function ProfilePage({ user }: { user: string }) {
                                 handleWorkExperienceChange(
                                   job.id,
                                   "description",
-                                  e.target.value
+                                  e.target.value,
                                 )
                               }
                               placeholder="Describe your responsibilities and achievements in this role"
@@ -705,7 +690,7 @@ export default function ProfilePage({ user }: { user: string }) {
                                 handleEducationChange(
                                   edu.id,
                                   "degree",
-                                  e.target.value
+                                  e.target.value,
                                 )
                               }
                             />
@@ -721,7 +706,7 @@ export default function ProfilePage({ user }: { user: string }) {
                                 handleEducationChange(
                                   edu.id,
                                   "institution",
-                                  e.target.value
+                                  e.target.value,
                                 )
                               }
                             />
@@ -738,7 +723,7 @@ export default function ProfilePage({ user }: { user: string }) {
                                 handleEducationChange(
                                   edu.id,
                                   "startDate",
-                                  e.target.value
+                                  e.target.value,
                                 )
                               }
                             />
@@ -755,7 +740,7 @@ export default function ProfilePage({ user }: { user: string }) {
                                 handleEducationChange(
                                   edu.id,
                                   "endDate",
-                                  e.target.value
+                                  e.target.value,
                                 )
                               }
                             />
@@ -847,7 +832,7 @@ export default function ProfilePage({ user }: { user: string }) {
                               handleProjectChange(
                                 proj.id,
                                 "name",
-                                e.target.value
+                                e.target.value,
                               )
                             }
                           />
@@ -864,7 +849,7 @@ export default function ProfilePage({ user }: { user: string }) {
                               handleProjectChange(
                                 proj.id,
                                 "description",
-                                e.target.value
+                                e.target.value,
                               )
                             }
                           />
@@ -926,7 +911,7 @@ export default function ProfilePage({ user }: { user: string }) {
                               handleAchievementChange(
                                 ach.id,
                                 "name",
-                                e.target.value
+                                e.target.value,
                               )
                             }
                           />
@@ -943,7 +928,7 @@ export default function ProfilePage({ user }: { user: string }) {
                               handleAchievementChange(
                                 ach.id,
                                 "description",
-                                e.target.value
+                                e.target.value,
                               )
                             }
                           />

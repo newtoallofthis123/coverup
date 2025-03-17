@@ -19,24 +19,41 @@ import Image from "next/image";
 export default async function Home() {
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="border-b">
+      <header className="border-b dark:border-gray-700">
         <div className="container flex items-center justify-between py-4">
           <Link href="/" className="text-2xl font-bold">
             <Image
               src="/coverup.jpeg"
+              className="dark:hidden"
+              alt="CoverUp Logo"
+              width={120}
+              height={120}
+            />
+            <Image
+              src="/coverup_dark.jpeg"
+              className="dark:block hidden"
               alt="CoverUp Logo"
               width={120}
               height={120}
             />
           </Link>
           <nav className="hidden md:flex items-center gap-6">
-            <Link href="/" className="font-medium">
+            <Link
+              href="/"
+              className="font-medium text-gray-900 dark:text-gray-100"
+            >
               Home
             </Link>
-            <Link href="/pricing" className="font-medium">
+            <Link
+              href="/pricing"
+              className="font-medium text-gray-900 dark:text-gray-100"
+            >
               Pricing
             </Link>
-            <Link href="/about" className="font-medium">
+            <Link
+              href="/about"
+              className="font-medium text-gray-900 dark:text-gray-100"
+            >
               About
             </Link>
           </nav>
@@ -52,13 +69,15 @@ export default async function Home() {
         </div>
       </header>
 
-      <section className="py-20 bg-gradient-to-b from-white to-gray-50">
+      <section className="py-20 dark:black">
         <div className="container flex flex-col items-center text-center">
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 text-gray-900 dark:text-gray-100">
             Craft Perfect Cover Letters{" "}
-            <span className="text-primary">in Seconds</span>
+            <span className="text-primary dark:text-primary-light">
+              in Seconds
+            </span>
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mb-10">
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mb-10">
             AI-powered cover letters tailored to your resume and the job
             description. Stand out from the crowd and land your dream job.
           </p>
@@ -67,51 +86,63 @@ export default async function Home() {
               Get Started <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </Link>
-          <div className="mt-8 text-sm text-gray-500">
+          <div className="mt-8 text-sm text-gray-500 dark:text-gray-400">
             20 free cover letters every month. No credit card required.
           </div>
-          <div className="mt-16 w-full max-w-4xl rounded-lg border shadow-lg overflow-hidden"></div>
+          <div className="mt-16 w-full max-w-4xl rounded-lg border dark:border-gray-700 shadow-lg overflow-hidden"></div>
         </div>
       </section>
 
       {/* Features Section */}
       <section className="py-20">
         <div className="container">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-gray-900 dark:text-gray-100">
             How It Works
           </h2>
           <div className="grid md:grid-cols-4 gap-8">
             {[
               {
-                icon: <User className="h-10 w-10 text-primary" />,
+                icon: (
+                  <User className="h-10 w-10 text-primary dark:text-primary-light" />
+                ),
                 title: "Create an account",
                 description:
                   "Sign up for free and get 20 cover letters per month.",
               },
               {
-                icon: <Upload className="h-10 w-10 text-primary" />,
+                icon: (
+                  <Upload className="h-10 w-10 text-primary dark:text-primary-light" />
+                ),
                 title: "Upload your resume",
                 description: "Add your details or upload your existing resume.",
               },
               {
-                icon: <FileText className="h-10 w-10 text-primary" />,
+                icon: (
+                  <FileText className="h-10 w-10 text-primary dark:text-primary-light" />
+                ),
                 title: "Generate cover letter",
                 description:
                   "Paste a job description and generate a tailored cover letter.",
               },
               {
-                icon: <MessageSquare className="h-10 w-10 text-primary" />,
+                icon: (
+                  <MessageSquare className="h-10 w-10 text-primary dark:text-primary-light" />
+                ),
                 title: "Refine with AI",
                 description: "Chat with our AI to perfect your cover letter.",
               },
             ].map((feature, index) => (
               <div
                 key={index}
-                className="flex flex-col items-center text-center p-6 rounded-lg border"
+                className="flex flex-col items-center text-center p-6 rounded-lg border dark:border-gray-700 bg-white dark:bg-black"
               >
                 <div className="mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
+                <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {feature.description}
+                </p>
               </div>
             ))}
           </div>
@@ -119,9 +150,9 @@ export default async function Home() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-gray-50 dark:bg-black">
         <div className="container">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-gray-900 dark:text-gray-100">
             What Our Users Say
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
@@ -145,12 +176,19 @@ export default async function Home() {
                 role: "Product Manager",
               },
             ].map((testimonial, index) => (
-              <div key={index} className="p-6 rounded-lg border bg-white">
-                <p className="text-gray-600 mb-4">
+              <div
+                key={index}
+                className="p-6 rounded-lg border bg-white dark:bg-black dark:border-gray-700"
+              >
+                <p className="text-gray-600 dark:text-gray-400 mb-4">
                   &quot;{testimonial.quote}&quot;
                 </p>
-                <div className="font-semibold">{testimonial.author}</div>
-                <div className="text-sm text-gray-500">{testimonial.role}</div>
+                <div className="font-semibold text-gray-900 dark:text-gray-100">
+                  {testimonial.author}
+                </div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                  {testimonial.role}
+                </div>
               </div>
             ))}
           </div>
@@ -158,12 +196,12 @@ export default async function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-primary text-primary-foreground">
+      <section className="py-20 bg-primary text-primary-foreground dark:bg-black dark:text-white">
         <div className="container flex flex-col items-center text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             Ready to Craft Your Perfect Cover Letter?
           </h2>
-          <p className="text-xl max-w-2xl mb-10 text-primary-foreground/90">
+          <p className="text-xl max-w-2xl mb-10 text-primary-foreground/90 dark:text-white">
             Join thousands of job seekers who have improved their job
             application success rate with CoverUp.
           </p>
@@ -177,7 +215,7 @@ export default async function Home() {
               <Button
                 size="lg"
                 variant="outline"
-                className="px-8 bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10"
+                className="px-8 bg-white border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10 dark:border-primary-foreground-dark dark:text-primary-foreground-dark dark:hover:bg-gray-800"
               >
                 View pricing
               </Button>
@@ -187,25 +225,30 @@ export default async function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t py-12 mt-auto">
+      <footer className="border-t py-12 mt-auto dark:border-gray-700">
         <div className="container">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-6 md:mb-0">
-              <Link href="/" className="text-xl font-bold">
+              <Link
+                href="/"
+                className="text-xl font-bold text-gray-900 dark:text-gray-100"
+              >
                 CoverUp
               </Link>
-              <p className="text-gray-500 mt-2">
-                © 2025 CoverUp. All rights reserved.
+              <p className="text-gray-500 dark:text-gray-400 mt-2">
+                © 2025 NoobScience. All rights reserved.
               </p>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-16">
               <div>
-                <h3 className="font-semibold mb-3">Product</h3>
+                <h3 className="font-semibold mb-3 text-gray-900 dark:text-gray-100">
+                  Product
+                </h3>
                 <ul className="space-y-2">
                   <li>
                     <Link
                       href="/features"
-                      className="text-gray-500 hover:text-gray-900"
+                      className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
                     >
                       Features
                     </Link>
@@ -213,7 +256,7 @@ export default async function Home() {
                   <li>
                     <Link
                       href="/pricing"
-                      className="text-gray-500 hover:text-gray-900"
+                      className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
                     >
                       Pricing
                     </Link>
@@ -221,12 +264,14 @@ export default async function Home() {
                 </ul>
               </div>
               <div>
-                <h3 className="font-semibold mb-3">Company</h3>
+                <h3 className="font-semibold mb-3 text-gray-900 dark:text-gray-100">
+                  Company
+                </h3>
                 <ul className="space-y-2">
                   <li>
                     <Link
                       href="/about"
-                      className="text-gray-500 hover:text-gray-900"
+                      className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
                     >
                       About
                     </Link>
@@ -234,7 +279,7 @@ export default async function Home() {
                   <li>
                     <Link
                       href="/contact"
-                      className="text-gray-500 hover:text-gray-900"
+                      className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
                     >
                       Contact
                     </Link>
@@ -242,12 +287,14 @@ export default async function Home() {
                 </ul>
               </div>
               <div>
-                <h3 className="font-semibold mb-3">Legal</h3>
+                <h3 className="font-semibold mb-3 text-gray-900 dark:text-gray-100">
+                  Legal
+                </h3>
                 <ul className="space-y-2">
                   <li>
                     <Link
                       href="/privacy"
-                      className="text-gray-500 hover:text-gray-900"
+                      className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
                     >
                       Privacy
                     </Link>
@@ -255,7 +302,7 @@ export default async function Home() {
                   <li>
                     <Link
                       href="/terms"
-                      className="text-gray-500 hover:text-gray-900"
+                      className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
                     >
                       Terms
                     </Link>
