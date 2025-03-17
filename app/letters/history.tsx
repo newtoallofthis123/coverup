@@ -28,6 +28,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import SignInNav from "@/components/custom/signin-nav";
+import { BACKEND_URL } from "@/lib/consts";
+import { toast } from "sonner";
 
 type CoverLetter = {
   id: string;
@@ -45,18 +47,18 @@ export default function CoverLettersPage({ letters }: { letters: any }) {
     letter.title.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    }).format(date);
-  };
-
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this cover letter?")) {
       setCoverLetters((prev) => prev.filter((letter) => letter.id !== id));
+      const res = await fetch(`${BACKEND_URL}/api/letters/${id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        toast.success("Cover letter deleted successfully", {
+          description: "Your cover letter has been deleted.",
+        });
+      }
     }
   };
 
@@ -139,10 +141,6 @@ export default function CoverLettersPage({ letters }: { letters: any }) {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem>
-                            <Download className="mr-2 h-4 w-4" />
-                            Download
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
                             <Pencil className="mr-2 h-4 w-4" />
                             Edit
                           </DropdownMenuItem>
@@ -159,8 +157,10 @@ export default function CoverLettersPage({ letters }: { letters: any }) {
                   <CardContent>
                     <div className="text-sm text-gray-500 space-y-1">
                       <div className="flex justify-between">
-                        <span>Created:</span>
-                        <span>{formatDate(letter.inserted_at)}</span>
+                        <span>Created At:</span>
+                        <span>
+                          {new Date(letter.inserted_at).toLocaleString()}
+                        </span>
                       </div>
                     </div>
                   </CardContent>

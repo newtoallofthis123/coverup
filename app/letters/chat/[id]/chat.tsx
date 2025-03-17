@@ -15,48 +15,64 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ArrowLeft, Send, Download, Save, User, Bot } from "lucide-react";
+import { ArrowLeft, Send, Save, User, Bot } from "lucide-react";
 import { streamText } from "ai";
-import { google } from "@ai-sdk/google";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import SignInNav from "@/components/custom/signin-nav";
+import { Textarea } from "@/components/ui/textarea";
+import { marked } from "marked";
+import { BACKEND_URL } from "@/lib/consts";
 
 type Message = {
   role: "user" | "assistant";
   content: string;
 };
 
-export default function ChatPage() {
+export default function Chat({
+  id,
+  letter,
+  apiKey,
+  imageUrl,
+}: {
+  id: string;
+  letter: any;
+  apiKey: string;
+  imageUrl: string;
+}) {
   const router = useRouter();
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      role: "assistant",
+      content:
+        "I'm your AI cover letter assistant. I can help you refine your cover letter, suggest improvements, or answer any questions you have about it. What would you like help with?",
+    },
+  ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [coverLetter, setCoverLetter] = useState("");
-  const [title, setTitle] = useState("Cover Letter");
+  const [coverLetter, setCoverLetter] = useState(letter.content);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const systemPrompt = `You are a cover letter assistant.
+You can only do three things:
+1. Refine the cover letter
+2. Add something to the cover letter
+3. Answer questions about the cover letter
+
+If the user asks you to add something, you can do so, but only based on the content of the cover letter.
+
+When the user asks questions about the cover letter, do not make any edits to the cover letter and
+respond to the user with the answer.
+
+When changes are needed in the cover letter, generate a message to the user and also the
+changed version of the cover letter in full.
+Generate a message to the user and also the changed version of the cover letter in the following format:
+--USER--
+Message to the user
+--LETTER--
+The changed version of the cover letter
+`;
+
   useEffect(() => {
-    // In a real app, you would fetch this from your API
-    const savedCoverLetter = localStorage.getItem("generatedCoverLetter");
-
-    if (savedCoverLetter) {
-      setCoverLetter(savedCoverLetter);
-
-      // Add initial system message
-      setMessages([
-        {
-          role: "assistant",
-          content:
-            "I'm your AI cover letter assistant. I can help you refine your cover letter, suggest improvements, or answer any questions you have about it. What would you like help with?",
-        },
-      ]);
-    } else {
-      // If no cover letter is found, redirect back to create
-      router.push("/letters/new");
-    }
-  }, [router]);
-
-  useEffect(() => {
-    // Scroll to bottom when messages change
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
@@ -65,14 +81,11 @@ export default function ChatPage() {
 
     const userMessage = input.trim();
     setInput("");
-
-    // Add user message to chat
     setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
-
     setIsLoading(true);
+    console.log(input);
 
     try {
-      // Prepare the context for the AI
       const context = `
         You are a professional cover letter assistant. Help the user refine their cover letter.
 
@@ -82,34 +95,48 @@ export default function ChatPage() {
         User message: ${userMessage}
       `;
 
-      // Create a temporary message for streaming
       setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
-      // Stream the response
       let fullResponse = "";
+      console.log(context);
 
-      const result = streamText({
-        model: google("gemini-2.0-flash-001"),
-        prompt: context,
-        onChunk: ({ chunk }) => {
-          if (chunk.type === "text-delta") {
-            //@ts-ignore
-            fullResponse += chunk.text;
-
-            // Update the last message with the streaming content
-            setMessages((prev) => {
-              const newMessages = [...prev];
-              newMessages[newMessages.length - 1] = {
-                role: "assistant",
-                content: fullResponse,
-              };
-              return newMessages;
-            });
-          }
-        },
+      const googleAi = createGoogleGenerativeAI({
+        apiKey: apiKey,
       });
 
-      await result.text;
+      const result = streamText({
+        model: googleAi("gemini-2.0-flash-001"),
+        prompt: context,
+        system: systemPrompt,
+      });
+      let mode = "query";
+      for await (let chunk of result.textStream) {
+        console.log(chunk);
+
+        if (chunk.includes("--LETTER--")) {
+          fullResponse = chunk.split("--LETTER--")[1].trim();
+          mode = "letter";
+        } else {
+          fullResponse += chunk;
+        }
+
+        if (fullResponse.includes("--USER--")) {
+          fullResponse = fullResponse.replace("--USER--", "").trim();
+        }
+
+        if (mode === "query") {
+          setMessages((prev) => {
+            const newMessages = [...prev];
+            newMessages[newMessages.length - 1] = {
+              role: "assistant",
+              content: fullResponse,
+            };
+            return newMessages;
+          });
+        } else if (mode === "letter") {
+          setCoverLetter(fullResponse);
+        }
+      }
     } catch (error) {
       console.error("Error sending message:", error);
 
@@ -133,26 +160,24 @@ export default function ChatPage() {
     }
   };
 
-  const handleUpdateCoverLetter = () => {
+  const handleUpdateCoverLetter = async () => {
     // In a real app, you would save the updated cover letter to your database
-    router.push("/letters");
-  };
+    const res = await fetch(`${BACKEND_URL}/api/letters/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        letter: {
+          content: coverLetter,
+        },
+      }),
+    });
 
-  const handleDownload = () => {
-    // Create a blob with the cover letter text
-    const blob = new Blob([coverLetter], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-
-    // Create a link and trigger download
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${title.replace(/[^a-z0-9]/gi, "-").toLowerCase()}.txt`;
-    document.body.appendChild(a);
-    a.click();
-
-    // Clean up
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    if (res.ok) {
+      console.log("Cover letter saved");
+    }
+    router.push("/letters/edit/" + id);
   };
 
   return (
@@ -160,7 +185,7 @@ export default function ChatPage() {
       <SignInNav />
 
       <main className="flex-grow py-12">
-        <div className="container max-w-4xl">
+        <div className="container">
           <Link
             href="/letters/edit"
             className="inline-flex items-center text-sm mb-6 text-gray-500 hover:text-gray-900"
@@ -170,7 +195,7 @@ export default function ChatPage() {
           </Link>
 
           <div className="grid md:grid-cols-5 gap-6">
-            <div className="md:col-span-2">
+            <div className="md:col-span-3">
               <Card>
                 <CardHeader>
                   <CardTitle>Your Cover Letter</CardTitle>
@@ -179,19 +204,13 @@ export default function ChatPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="bg-gray-50 p-4 rounded-md max-h-[500px] overflow-y-auto font-serif text-sm">
-                    {coverLetter.split("\n").map((paragraph, index) => (
-                      <p key={index} className="mb-3">
-                        {paragraph}
-                      </p>
-                    ))}
-                  </div>
+                  <Textarea
+                    value={coverLetter}
+                    onChange={(e) => setCoverLetter(e.target.value)}
+                    className="min-h-[500px] text-base"
+                  />
                 </CardContent>
                 <CardFooter className="flex justify-between">
-                  <Button variant="outline" onClick={handleDownload}>
-                    <Download className="mr-2 h-4 w-4" />
-                    Download
-                  </Button>
                   <Button onClick={handleUpdateCoverLetter}>
                     <Save className="mr-2 h-4 w-4" />
                     Save & Finish
@@ -200,10 +219,10 @@ export default function ChatPage() {
               </Card>
             </div>
 
-            <div className="md:col-span-3">
+            <div className="md:col-span-2">
               <Card className="h-full flex flex-col">
                 <CardHeader>
-                  <CardTitle>AI Assistant</CardTitle>
+                  <CardTitle>Kolavari Bot</CardTitle>
                   <CardDescription>
                     Chat with our AI to refine your cover letter
                   </CardDescription>
@@ -232,24 +251,22 @@ export default function ChatPage() {
                           <div className="flex items-center mb-1">
                             {message.role === "user" ? (
                               <>
+                                <img src={imageUrl} className="h-5 w-5 mr-1" />
                                 <span className="font-medium">You</span>
-                                <User className="h-3 w-3 ml-1" />
                               </>
                             ) : (
                               <>
-                                <span className="font-medium">
-                                  AI Assistant
-                                </span>
-                                <Bot className="h-3 w-3 ml-1" />
+                                <Bot className="h-5 w-5 mr-1" />
+                                <span className="font-medium">Kolavari</span>
                               </>
                             )}
                           </div>
                           <div>
-                            {message.content.split("\n").map((line, i) => (
-                              <p key={i} className={i > 0 ? "mt-2" : ""}>
-                                {line}
-                              </p>
-                            ))}
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: marked(message.content),
+                              }}
+                            ></div>
                           </div>
                         </div>
                       </div>

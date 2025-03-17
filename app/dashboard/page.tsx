@@ -13,6 +13,7 @@ import { FileText, Plus, User } from "lucide-react";
 import SignInNav from "@/components/custom/signin-nav";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { formatDistanceToNow } from "date-fns";
 import { BACKEND_URL } from "@/lib/consts";
 
 type Letter = {
@@ -61,6 +62,64 @@ export default async function DashboardPage() {
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
             <Card>
               <CardHeader className="pb-2">
+                <CardTitle>Generate a New Cover Letter</CardTitle>
+                <CardDescription>
+                  Just add in the title and job description
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <p>
+                    We will generate a cover letter for you based on your
+                    information, so fill in all the{" "}
+                    <a href="/profile" className="underline">
+                      details
+                    </a>
+                    .
+                  </p>
+                  <Button className="w-full">
+                    <a href="/letters/new" className="w-full">
+                      Generate Cover Letter
+                    </a>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle>Recent Cover Letters</CardTitle>
+                <CardDescription>
+                  Your recently created cover letters
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {letters.map((letter, index) => (
+                    <div key={index} className="flex items-start">
+                      <FileText className="h-5 w-5 mr-2 mt-0.5 text-primary" />
+                      <div>
+                        <p className="font-medium">{letter.title}</p>
+                        <p className="text-sm text-gray-500">
+                          Generated{" "}
+                          {formatDistanceToNow(new Date(letter.inserted_at))}{" "}
+                          ago
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Link href="/letters" className="w-full">
+                  <Button variant="outline" className="w-full">
+                    View all
+                  </Button>
+                </Link>
+              </CardFooter>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
                 <CardTitle>Usage</CardTitle>
                 <CardDescription>
                   Your monthly cover letter usage
@@ -85,64 +144,6 @@ export default async function DashboardPage() {
                 </Button>
               </CardFooter>
             </Card>
-
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle>Recent Cover Letters</CardTitle>
-                <CardDescription>
-                  Your recently created cover letters
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {letters.map((letter, index) => (
-                    <div key={index} className="flex items-start">
-                      <FileText className="h-5 w-5 mr-2 mt-0.5 text-primary" />
-                      <div>
-                        <p className="font-medium">{letter.title}</p>
-                        <p className="text-sm text-gray-500">
-                          {new Date(letter.inserted_at).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Link href="/letters" className="w-full">
-                  <Button variant="outline" className="w-full">
-                    View all
-                  </Button>
-                </Link>
-              </CardFooter>
-            </Card>
-
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle>Profile Completion</CardTitle>
-                <CardDescription>
-                  Complete your profile for better results
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <Progress value={75} />
-                  <div className="text-sm">
-                    <p className="font-medium">75% complete</p>
-                    <p className="text-gray-500">
-                      Add your work experience to complete your profile
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Link href="/profile" className="w-full">
-                  <Button variant="outline" className="w-full">
-                    Complete profile
-                  </Button>
-                </Link>
-              </CardFooter>
-            </Card>
           </div>
 
           <div className="mb-8">
@@ -159,20 +160,6 @@ export default async function DashboardPage() {
                     </h3>
                     <p className="text-sm text-gray-500 text-center">
                       Create a new cover letter from a job description
-                    </p>
-                  </CardContent>
-                </Card>
-              </Link>
-
-              <Link href="/templates" className="block">
-                <Card className="h-full hover:border-primary/50 transition-colors">
-                  <CardContent className="flex flex-col items-center justify-center h-full py-12">
-                    <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                      <FileText className="h-6 w-6 text-primary" />
-                    </div>
-                    <h3 className="font-semibold text-lg mb-1">Templates</h3>
-                    <p className="text-sm text-gray-500 text-center">
-                      Choose from our professional templates
                     </p>
                   </CardContent>
                 </Card>

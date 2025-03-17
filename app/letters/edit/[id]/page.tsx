@@ -136,7 +136,7 @@ export default function EditCoverLetterPage() {
                   <div className="flex gap-4">
                     <Button variant="outline">
                       <MessageSquare className="mr-2 h-4 w-4" />
-                      <a href="/letters/chat">Refine with AI</a>
+                      <a href={`/letters/chat/${id}`}>Refine with AI</a>
                     </Button>
                     <Button onClick={handleSave} disabled={isSaving}>
                       <Save className="mr-2 h-4 w-4" />
