@@ -19,5 +19,5 @@ export default async function CoverLetters() {
 
   const letters = await fetchCoverLetters(userId.userId);
 
-  return <CoverLettersPage userId={userId.userId} letters={letters} />;
+  return <CoverLettersPage letters={letters} />;
 }
