@@ -37,11 +37,7 @@ type CoverLetter = {
   inserted_at: string;
 };
 
-export default function CoverLettersPage({
-  letters,
-}: {
-  letters: CoverLetter[];
-}) {
+export default function CoverLettersPage({ letters }: { letters: any }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [coverLetters, setCoverLetters] = useState<CoverLetter[]>(letters);
 
