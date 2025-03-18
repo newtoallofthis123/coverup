@@ -12,7 +12,7 @@ const fetchData = async (userId: string) => {
       return data;
     } else {
       console.log("Error fetching data:", response.statusText);
-      return null;
+      return undefined;
     }
   } catch (error) {
     console.error("Error fetching data:", error);
