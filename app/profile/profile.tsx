@@ -355,6 +355,9 @@ export default function ProfilePage({
       toast.success("Profile saved!", {
         description: "Your profile has been saved succesfully!",
       });
+      if (method === "POST") {
+        router.push("/profile");
+      }
     } else {
       console.error("Failed to save profile:", resp);
       toast.error("Unable to save profile!", {
