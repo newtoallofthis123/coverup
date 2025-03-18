@@ -94,7 +94,11 @@ export default function ProfilePage({
   const userId = user;
 
   useEffect(() => {
-    parseData(data);
+    if (data) {
+      parseData(data);
+    } else {
+      console.log("No data found");
+    }
   }, [data]);
 
   function parseData(data: any) {
