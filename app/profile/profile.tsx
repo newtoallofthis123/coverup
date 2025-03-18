@@ -280,14 +280,27 @@ export default function ProfilePage({
     const res = await fetch(`${PARSER_URL}/parse`, {
       method: "POST",
       body: formData,
+    }).catch((err) => {
+      console.log(err);
+      toast("Error parsing resume");
+      setLoading(false);
     });
+    if (!res) {
+      return;
+    }
     const data = await res.json();
-    data["data"] = data["data"].replace(/`/g, "'");
-    const json_data = JSON.parse(data["data"]);
-    console.log(json_data);
-    parseData(json_data);
-    setLoading(false);
-    toast("Loaded in data from resume");
+    try {
+      const json_data = JSON.parse(data["data"]);
+      console.log(json_data);
+      parseData(json_data);
+      setLoading(false);
+      toast("Loaded in data from resume");
+    } catch (e) {
+      console.log(e);
+      setLoading(false);
+      toast("Failed to load data from resume");
+      return;
+    }
   };
 
   const handleAddSocial = () => {
