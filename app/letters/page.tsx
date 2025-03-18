@@ -19,7 +19,7 @@ export default async function CoverLetters() {
 
   let letters = await fetchCoverLetters(userId.userId);
   letters = letters.sort(
-    (a, b) =>
+    (a: any, b: any) =>
       new Date(b.inserted_at).getTime() - new Date(a.inserted_at).getTime(),
   );
 
