@@ -17,7 +17,6 @@ import {
   Plus,
   Search,
   MoreHorizontal,
-  Download,
   Pencil,
   Trash2,
 } from "lucide-react";

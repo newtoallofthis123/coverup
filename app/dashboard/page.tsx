@@ -37,7 +37,11 @@ export default async function DashboardPage() {
   const data = await res.json();
 
   const usedCoverLetters = data.count;
-  const letters: Letter[] = data.letters;
+  let letters: Letter[] = data.letters;
+  letters = letters.sort(
+    (a, b) =>
+      new Date(b.inserted_at).getTime() - new Date(a.inserted_at).getTime(),
+  );
   const hasResume = data.has_resume;
 
   if (!hasResume) {

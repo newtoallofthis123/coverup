@@ -22,6 +22,7 @@ import { PARSER_URL } from "@/lib/consts";
 import SignInNav from "@/components/custom/signin-nav";
 import Loading from "../loading";
 import { toast } from "sonner";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 type WorkExperience = {
   id: string;
@@ -92,6 +93,11 @@ export default function ProfilePage({
   const [other, setOther] = useState<Other>({ Hobbies: "", Languages: "" });
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const userId = user;
+  const searchParams = useSearchParams();
+  const currTab = searchParams.get("tab") || "personal";
+  const [tab, setTab] = useState(currTab);
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (data !== undefined) {
@@ -382,7 +388,15 @@ export default function ProfilePage({
             </p>
           </div>
 
-          <Tabs defaultValue="personal">
+          <Tabs
+            value={tab}
+            onValueChange={(val) => {
+              setTab(val);
+              const params = new URLSearchParams(searchParams.toString());
+              params.set("tab", val);
+              router.push(pathname + "/?" + params.toString());
+            }}
+          >
             <TabsList className="mb-8">
               <TabsTrigger value="personal">Personal Info</TabsTrigger>
               <TabsTrigger value="social">Social Media</TabsTrigger>

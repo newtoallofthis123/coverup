@@ -17,7 +17,11 @@ export default async function CoverLetters() {
   const userId = await auth();
   if (!userId.userId) redirect("/sign-in");
 
-  const letters = await fetchCoverLetters(userId.userId);
+  let letters = await fetchCoverLetters(userId.userId);
+  letters = letters.sort(
+    (a, b) =>
+      new Date(b.inserted_at).getTime() - new Date(a.inserted_at).getTime(),
+  );
 
   return <CoverLettersPage letters={letters} />;
 }
