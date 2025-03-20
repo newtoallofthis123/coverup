@@ -125,7 +125,7 @@ export default function NewCoverLetterPage({ userId }: { userId: string }) {
             <h3 className="text-lg font-semibold mb-4">
               Tips for better results:
             </h3>
-            <ul className="space-y-2 text-gray-600">
+            <ul className="space-y-2 text-gray-600 dark:text-gray-400">
               <li className="flex items-start">
                 <span className="font-bold mr-2">•</span>
                 <span>

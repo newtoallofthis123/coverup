@@ -70,7 +70,7 @@ export default function CoverLettersPage({ letters }: { letters: any }) {
           <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
             <div>
               <h1 className="text-3xl font-bold mb-2">My Cover Letters</h1>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-400">
                 Manage and organize your cover letters
               </p>
             </div>
@@ -128,7 +128,7 @@ export default function CoverLettersPage({ letters }: { letters: any }) {
                         <CardTitle className="mb-2 leading-5">
                           {letter.title}
                         </CardTitle>
-                        <CardDescription>
+                        <CardDescription className="text-sm text-gray-500 dark:text-gray-200">
                           {letter.job_description.slice(0, 100)}...
                         </CardDescription>
                       </div>
@@ -154,9 +154,9 @@ export default function CoverLettersPage({ letters }: { letters: any }) {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-sm text-gray-500 space-y-1">
-                      <div className="flex justify-between">
-                        <span>Created At:</span>
+                    <div className="text-sm text-gray-500 dark:text-gray-200 space-y-1">
+                      <div>
+                        <span>Created At: </span>
                         <span>
                           {new Date(letter.inserted_at).toLocaleString()}
                         </span>

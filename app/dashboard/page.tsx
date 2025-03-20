@@ -58,7 +58,7 @@ export default async function DashboardPage() {
             <h1 className="text-3xl font-bold mb-2">
               Welcome back {user.firstName ?? user.username}!
             </h1>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-100">
               Create and manage your cover letters
             </p>
           </div>
@@ -104,7 +104,7 @@ export default async function DashboardPage() {
                       <FileText className="h-5 w-5 mr-2 mt-0.5 text-primary" />
                       <div>
                         <p className="font-medium">{letter.title}</p>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
                           Generated{" "}
                           {formatDistanceToNow(new Date(letter.inserted_at))}{" "}
                           ago

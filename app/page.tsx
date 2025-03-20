@@ -146,7 +146,7 @@ export default async function Home() {
                 className="flex flex-col items-center text-center p-6 rounded-lg border dark:border-gray-700 bg-white dark:bg-black"
               >
                 <div className="mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
+                <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-50">
                   {feature.title}
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400">
@@ -189,7 +189,7 @@ export default async function Home() {
                 key={index}
                 className="p-6 rounded-lg border bg-white dark:bg-black dark:border-gray-700"
               >
-                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                <p className="text-gray-600 dark:text-gray-100 mb-4">
                   &quot;{testimonial.quote}&quot;
                 </p>
                 <div className="font-semibold text-gray-900 dark:text-gray-100">

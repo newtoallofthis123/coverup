@@ -102,7 +102,7 @@ export default function EditCoverLetterPage() {
             <Input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="text-2xl font-bold border-none px-0 text-gray-900 focus-visible:ring-0"
+              className="text-2xl font-bold border-none px-0 text-gray-900 dark:text-gray-100 focus-visible:ring-0"
               placeholder="Enter a title for your cover letter"
             />
           </div>
