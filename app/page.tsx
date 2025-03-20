@@ -15,59 +15,68 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import Image from "next/image";
+import { auth } from "@clerk/nextjs/server";
+import SignInNav from "@/components/custom/signin-nav";
 
 export default async function Home() {
+  const user = await auth();
+  const isLoggedIn = user ? true : false;
+
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="border-b dark:border-gray-700">
-        <div className="container flex items-center justify-between py-4">
-          <Link href="/" className="text-2xl font-bold">
-            <Image
-              src="/coverup.jpeg"
-              className="dark:hidden"
-              alt="CoverUp Logo"
-              width={120}
-              height={120}
-            />
-            <Image
-              src="/coverup_dark.jpeg"
-              className="dark:block hidden"
-              alt="CoverUp Logo"
-              width={120}
-              height={120}
-            />
-          </Link>
-          <nav className="hidden md:flex items-center gap-6">
-            <Link
-              href="/"
-              className="font-medium text-gray-900 dark:text-gray-100"
-            >
-              Home
+      {isLoggedIn ? (
+        <SignInNav />
+      ) : (
+        <header className="border-b dark:border-gray-700">
+          <div className="container flex items-center justify-between py-4">
+            <Link href="/" className="text-2xl font-bold">
+              <Image
+                src="/coverup.jpeg"
+                className="dark:hidden"
+                alt="CoverUp Logo"
+                width={120}
+                height={120}
+              />
+              <Image
+                src="/coverup_dark.jpeg"
+                className="dark:block hidden"
+                alt="CoverUp Logo"
+                width={120}
+                height={120}
+              />
             </Link>
-            <Link
-              href="/pricing"
-              className="font-medium text-gray-900 dark:text-gray-100"
-            >
-              Pricing
-            </Link>
-            <Link
-              href="/about"
-              className="font-medium text-gray-900 dark:text-gray-100"
-            >
-              About
-            </Link>
-          </nav>
-          <div className="flex items-center gap-4">
-            <SignedOut>
-              <SignInButton />
-              <SignUpButton />
-            </SignedOut>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
+            <nav className="hidden md:flex items-center gap-6">
+              <Link
+                href="/"
+                className="font-medium text-gray-900 dark:text-gray-100"
+              >
+                Home
+              </Link>
+              <Link
+                href="/pricing"
+                className="font-medium text-gray-900 dark:text-gray-100"
+              >
+                Pricing
+              </Link>
+              <Link
+                href="/about"
+                className="font-medium text-gray-900 dark:text-gray-100"
+              >
+                About
+              </Link>
+            </nav>
+            <div className="flex items-center gap-4">
+              <SignedOut>
+                <SignInButton />
+                <SignUpButton />
+              </SignedOut>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
+      )}
 
       <section className="py-20 dark:black">
         <div className="container flex flex-col items-center text-center">
