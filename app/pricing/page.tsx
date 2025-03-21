@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Check } from 'lucide-react';
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Check } from "lucide-react";
 
 export default function PricingPage() {
   return (
@@ -144,25 +144,25 @@ export default function PricingPage() {
             <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto text-left">
               {[
                 {
-                  question: 'Can I cancel my subscription anytime?',
+                  question: "Can I cancel my subscription anytime?",
                   answer:
-                    'Yes, you can cancel your subscription at any time. Your premium features will remain active until the end of your billing period.',
+                    "Yes, you can cancel your subscription at any time. Your premium features will remain active until the end of your billing period.",
                 },
                 {
                   question:
-                    'What happens if I use all my monthly cover letters?',
+                    "What happens if I use all my monthly cover letters?",
                   answer:
-                    "Once you've used all your monthly cover letters, you'll need to wait until the next billing cycle or upgrade to the Premium plan for more.",
+                    "Once you've used all your monthly cover letters, you'll need to wait until the next billing cycle or upgrade to the Premium plan for more (Coming Soon).",
                 },
                 {
-                  question: 'Can I download my cover letters?',
+                  question: "Can I download my cover letters?",
                   answer:
-                    'Yes, all plans allow you to download your cover letters. Free users can download as PDF, while Premium users can download as PDF, Word, or TXT.',
+                    "Yes, all plans allow you to download your cover letters. Free users can download as PDF, while Premium users can download as PDF, Word, or TXT.",
                 },
                 {
-                  question: 'Is my data secure?',
+                  question: "Is my data secure?",
                   answer:
-                    'We take data security seriously. Your resume data and cover letters are encrypted and never shared with third parties.',
+                    "We take data security seriously. Your resume data and cover letters are encrypted and never shared with third parties.",
                 },
               ].map((faq, index) => (
                 <div key={index} className="p-6 rounded-lg border">

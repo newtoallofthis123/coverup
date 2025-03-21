@@ -30,9 +30,7 @@ export default async function DashboardPage() {
     redirect("/sign-in");
   }
 
-  const res = await fetch(`${BACKEND_URL}/api/dashboard/${user.id}`, {
-    method: "GET",
-  });
+  const res = await fetch(`${BACKEND_URL}/api/dashboard/${user.id}`, {});
 
   const data = await res.json();
 
@@ -144,7 +142,7 @@ export default async function DashboardPage() {
               </CardContent>
               <CardFooter>
                 <Button variant="outline" className="w-full">
-                  Upgrade to Premium
+                  Premium coming Soon
                 </Button>
               </CardFooter>
             </Card>
