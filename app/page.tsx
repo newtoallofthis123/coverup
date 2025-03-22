@@ -98,10 +98,10 @@ export default async function Home() {
           <div className="mt-8 text-sm text-gray-500 dark:text-gray-400">
             20 free cover letters every month. No credit card required.
           </div>
-          <div className="mt-16 w-full max-w-4xl rounded-lg border dark:border-gray-700 shadow-lg overflow-hidden">
+          <div className="mt-16 w-full max-w-3xl rounded-lg border dark:border-gray-700 shadow-lg overflow-hidden">
             <iframe
-              width="800"
-              height="500"
+              width="780"
+              height="400"
               src="https://www.youtube-nocookie.com/embed/8oIuMrdy9CU?si=XFmbhLQRZP7g-mqU"
               title="YouTube video player"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
