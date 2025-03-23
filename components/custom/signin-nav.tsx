@@ -1,7 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { UserButton, SignOutButton } from "@clerk/nextjs";
+import {
+  UserButton,
+  SignOutButton,
+  SignedIn,
+  SignedOut,
+  SignUpButton,
+  SignInButton,
+} from "@clerk/nextjs";
 import { DarkModeToggle } from "./dark-mode";
 
 export default function SignInNav() {
@@ -37,10 +44,16 @@ export default function SignInNav() {
         </nav>
         <div className="flex items-center gap-4">
           <DarkModeToggle />
-          <Button variant="ghost" size="icon">
-            <UserButton />
-          </Button>
-          <SignOutButton />
+          <SignedOut>
+            <SignInButton />
+            <SignUpButton />
+          </SignedOut>
+          <SignedIn>
+            <Button variant="ghost" size="icon">
+              <UserButton />
+            </Button>
+            <SignOutButton />
+          </SignedIn>
         </div>
       </div>
     </header>
