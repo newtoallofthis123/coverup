@@ -9,6 +9,16 @@ const fetchData = async (userId: string) => {
     let data;
     if (response.ok) {
       data = await response.json();
+      data.work = data.work.replace(/\n/g, "\\n");
+      data.education = data.education.replace(/\n/g, "\\n");
+      data.achievements = data.achievements.replace(/\n/g, "\\n");
+      data.projects = data.projects.replace(/\n/g, "\\n");
+
+      data.work = JSON.parse(data.work || "[]");
+      data.education = JSON.parse(data.education || "[]");
+      data.achievements = JSON.parse(data.achievements || "[]");
+      data.projects = JSON.parse(data.projects || "[]");
+      data.other = JSON.parse(data.other || "{}");
       return data;
     } else {
       console.log("Error fetching data:", response.statusText);

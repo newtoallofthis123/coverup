@@ -96,18 +96,19 @@ export default function ProfilePage({
   const searchParams = useSearchParams();
   const currTab = searchParams.get("tab") || "personal";
   const [tab, setTab] = useState(currTab);
+  const [resumeData, setResumeData] = useState(data);
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    if (data !== undefined) {
-      parseData(data);
+    if (resumeData !== undefined) {
+      addData(resumeData);
     } else {
       console.log("No data found");
     }
-  }, [data]);
+  }, [resumeData]);
 
-  function parseData(data: any) {
+  function addData(data: any) {
     setPersonalInfo({
       firstName: data.first_name || "",
       lastName: data.last_name || "",
@@ -115,6 +116,7 @@ export default function ProfilePage({
       phone: data.phone || "",
       summary: data.summary || "",
     });
+    console.log(data);
 
     setSocial(
       Object.entries(data.social || {}).map(([platform, url], index) => ({
@@ -124,26 +126,12 @@ export default function ProfilePage({
       })),
     );
 
-    data.work = data.work.replace(/\n/g, "\\n");
-    data.education = data.education.replace(/\n/g, "\\n");
-    data.achievements = data.achievements.replace(/\n/g, "\\n");
-    data.projects = data.projects.replace(/\n/g, "\\n");
-
-    const works = JSON.parse(data.work || "[]");
-    const educs = JSON.parse(data.education || "[]");
-    const achis = JSON.parse(data.achievements || "[]");
-    const projs = JSON.parse(data.projects || "[]");
-    const others = JSON.parse(data.other || "{}");
-
-    setWorkExperience(works);
-
-    setEducation(educs);
-
+    setWorkExperience(data.work || []);
+    setEducation(data.education || []);
     setSkills(data.skills || "");
-    setProjects(projs);
-    setAchievements(achis);
-
-    setOther(others || { Hobbies: "", Languages: "" });
+    setProjects(data.projects || []);
+    setAchievements(data.achievements || []);
+    setOther(data.other || { Hobbies: "", Languages: "" });
   }
 
   const handlePersonalInfoChange = (
@@ -296,9 +284,7 @@ export default function ProfilePage({
     }
     const data = await res.json();
     try {
-      const json_data = JSON.parse(data["data"]);
-      console.log(json_data);
-      parseData(json_data);
+      setResumeData(data);
       setLoading(false);
       toast("Loaded in data from resume");
     } catch (e) {
